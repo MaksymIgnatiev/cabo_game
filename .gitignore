@@ -38,3 +38,5 @@ next-env.d.ts
 .eslintrc.json
 
 test.py
+test.js
+result.txt

@@ -11,6 +11,10 @@ export default function MainGame() {
 				</div>
 			</div>
 
+			{/* 
+			some text here 
+			
+			*/}
 			<div class="game">
 				<div>
 					{as.map((e) => (
