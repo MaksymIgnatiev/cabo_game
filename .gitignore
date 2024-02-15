@@ -43,3 +43,5 @@ result.txt
 test.pyx
 *.mp3
 *.wav
+*.ipynb
+*.csv
