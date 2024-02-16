@@ -19,6 +19,12 @@ export default function MainGame() {
 			and again
 			and again
 			and again
+			and again
+			and again
+			and again
+			and again
+			and again
+			and again
 			
 			*/}
 			<div class="game">
