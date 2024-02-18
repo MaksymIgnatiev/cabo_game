@@ -17,6 +17,8 @@ export default function MainGame() {
 			{/* 
 			some text here 
 			and again
+			and again
+			and again
 			
 			*/}
 			<div class="game">
