@@ -19,6 +19,8 @@ export default function MainGame() {
 			and again
 			and again
 			and again
+
+			why would you see this text?
 			
 			*/}
 			<div class="game">
