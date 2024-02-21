@@ -21,6 +21,7 @@ export default function MainGame() {
 			and again
 
 			why would you see this text?
+			don't watch my files
 			
 			*/}
 			<div class="game">
