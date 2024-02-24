@@ -15,15 +15,7 @@ export default function MainGame() {
 			</div>
 
 			{/* 
-			some text here 
-			and again
-			and again
-			and again
-
-			why would you see this text?
-			don't watch my files
-			i said don't watch my files
-			
+			i can proof that 2 + 2 = 5
 			*/}
 			<div class="game">
 				<div>
