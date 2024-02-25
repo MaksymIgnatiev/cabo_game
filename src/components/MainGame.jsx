@@ -16,6 +16,7 @@ export default function MainGame() {
 
 			{/* 
 			i can proof that 2 + 2 = 5
+			but first, we can prove that 2 + 2 = 4
 			*/}
 			<div class="game">
 				<div>
