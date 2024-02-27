@@ -18,6 +18,7 @@ export default function MainGame() {
 			i can proof that 2 + 2 = 5
 			but first, we can prove that 2 + 2 = 4
 			i'm to lazy to do this
+			i need bass
 			*/}
 			<div class="game">
 				<div>
