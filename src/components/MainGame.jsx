@@ -20,6 +20,7 @@ export default function MainGame() {
 			i'm to lazy to do this
 			i need bass
 			i need bass
+			i need bass
 			*/}
 			<div class="game">
 				<div>
