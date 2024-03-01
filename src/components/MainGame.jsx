@@ -15,12 +15,7 @@ export default function MainGame() {
 			</div>
 
 			{/* 
-			i can proof that 2 + 2 = 5
-			but first, we can prove that 2 + 2 = 4
-			i'm to lazy to do this
-			i need bass
-			i need bass
-			i need bass
+			let me check one thing
 			*/}
 			<div class="game">
 				<div>
