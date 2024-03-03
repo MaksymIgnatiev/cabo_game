@@ -17,6 +17,7 @@ export default function MainGame() {
 			{/* 
 			let me check one thing
 			yes, it's definietly that thing i have checked
+			there was a problem, but we fixed that :)
 			*/}
 			<div class="game">
 				<div>
