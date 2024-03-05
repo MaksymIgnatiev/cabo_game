@@ -15,10 +15,7 @@ export default function MainGame() {
 			</div>
 
 			{/* 
-			let me check one thing
-			yes, it's definietly that thing i have checked
-			there was a problem, but we fixed that :)
-			no way that it worked
+			well... i have a problem, nut i think i cak fix it
 			*/}
 			<div class="game">
 				<div>
