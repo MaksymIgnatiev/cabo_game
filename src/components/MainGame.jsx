@@ -16,6 +16,7 @@ export default function MainGame() {
 
 			{/* 
 			well... i have a problem, nut i think i cak fix it
+			:skull:
 			*/}
 			<div class="game">
 				<div>
