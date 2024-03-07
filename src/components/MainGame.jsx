@@ -4,8 +4,6 @@ let file = fs.createWriteStream()
 export default function MainGame() {
 	const [as, setAs] = useState(Array.from({ length: 10 }, (_, i) => i + 1))
 
-	const [count, setCount] = useState(0)
-
 	return (
 		<div class="wrapper">
 			<div class="top">
