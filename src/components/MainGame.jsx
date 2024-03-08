@@ -13,8 +13,9 @@ export default function MainGame() {
 			</div>
 
 			{/* 
-			well... i have a problem, nut i think i cak fix it
+			well... i have a problem, but i think i cak fix it
 			:skull:
+			nevermind, i fixed it.
 			*/}
 			<div class="game">
 				<div>
