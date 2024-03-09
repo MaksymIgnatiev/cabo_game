@@ -16,6 +16,8 @@ export default function MainGame() {
 			well... i have a problem, but i think i cak fix it
 			:skull:
 			nevermind, i fixed it.
+
+			ANSI my beloved :heart:
 			*/}
 			<div class="game">
 				<div>
