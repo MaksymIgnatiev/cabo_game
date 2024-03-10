@@ -18,6 +18,7 @@ export default function MainGame() {
 			nevermind, i fixed it.
 
 			ANSI my beloved :heart:
+			It's realy very powerfull
 			*/}
 			<div class="game">
 				<div>
