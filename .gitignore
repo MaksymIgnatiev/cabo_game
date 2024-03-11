@@ -40,8 +40,4 @@ next-env.d.ts
 test.py
 test.js
 result.txt
-test.pyx
-*.mp3
-*.wav
-*.ipynb
-*.csv
+.env
