@@ -1,11 +1,11 @@
+
 import styles from "./page.module.css"
-import { MainGame as MainGameComponent } from "@/components/MainGame"
-import BlocksParent from "@/components/BlocksParent"
+import MainGame from "@/components/MainGame"
 export default function Home() {
 	return (
 		<>
-			<MainGameComponent />
-			<BlocksParent />
+			<h1>hello world</h1>
+			<MainGame></MainGame>
 		</>
 	)
 }

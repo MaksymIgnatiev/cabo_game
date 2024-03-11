@@ -1,9 +1,9 @@
-import React, { useState } from "react"
-import fs from "node:fs"
-let file = fs.createWriteStream()
-export default function MainGame() {
-	const [as, setAs] = useState(Array.from({ length: 10 }, (_, i) => i + 1))
+"use client"
 
+import { useState } from "react"
+
+export default function MainGame() {
+	const [as, setAs] = useState(Array.from({length: 10}, (_, i) => i + 1))
 	return (
 		<div class="wrapper">
 			<div class="top">
@@ -11,20 +11,9 @@ export default function MainGame() {
 					<button value="8" class="test"></button>
 				</div>
 			</div>
-
-			{/* 
-			well... i have a problem, but i think i cak fix it
-			:skull:
-			nevermind, i fixed it.
-
-			ANSI my beloved :heart:
-			It's realy very powerfull
-			*/}
 			<div class="game">
 				<div>
-					{as.map((e) => (
-						<span key={e}>{"JSX is cool ".repeat(e)}</span>
-					))}
+					{as.map(e => <a key={e}>{e}</a>)}
 				</div>
 				<h1>денег нету, сайт будет доступен после финансирования</h1>
 			</div>
