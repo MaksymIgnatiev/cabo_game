@@ -8,5 +8,3 @@ export default function Home() {
 		</>
 	)
 }
-// 17 * 24
-// 3 * 24
