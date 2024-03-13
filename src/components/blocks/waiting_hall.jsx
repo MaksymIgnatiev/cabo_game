@@ -1,20 +1,20 @@
 export default function waiting_hall() {
 	return (
-		<div class="waiting">
-			<div class="waiting-wrapper">
-				<div class="top-info">
+		<div className="waiting b-g">
+			<div className="waiting-wrapper">
+				<div className="top-info">
 					<h2>Waiting hall</h2>
 					<h3>
-						<span class="room-id"></span>
-						<span class="user-id"></span>
+						<span className="room-id"></span>
+						<span className="user-id"></span>
 					</h3>
 				</div>
-				<div class="mid-info">
-					<div class="members"></div>
-					<div class="aside">
-						{/* <div class="aside-wrapper">
-							<span class="coppied">Coppied!</span>
-							<div class="invite">
+				<div className="mid-info">
+					<div className="members"></div>
+					<div className="aside">
+						{/* <div className="aside-wrapper">
+							<span className="coppied">Coppied!</span>
+							<div className="invite">
 								<div>
 									<span>Invite link:</span>
 									<svg
@@ -31,7 +31,7 @@ export default function waiting_hall() {
 											}}
 										</style>
 										<rect
-											class="svg-cls-1"
+											className="svg-cls-1"
 											x="1.5"
 											y="21.14"
 											width="35.08"
@@ -40,7 +40,7 @@ export default function waiting_hall() {
 											ry="8.03"
 										/>
 										<rect
-											class="svg-cls-1"
+											className="svg-cls-1"
 											x="11.44"
 											y="11.44"
 											width="35.08"
@@ -50,10 +50,10 @@ export default function waiting_hall() {
 										/>
 									</svg>
 								</div>
-								<span class="invite-link"></span>
+								<span className="invite-link"></span>
 							</div>
-							<button class="btn-ready"></button>
-							<button class="btn-leave">Leave the game</button>
+							<button className="btn-ready"></button>
+							<button className="btn-leave">Leave the game</button>
 						</div> */}
 					</div>
 				</div>

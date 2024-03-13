@@ -1,6 +1,6 @@
 export default function switchPage() {
 	return (
-		<div class="switch">
+		<div className="switch b-g">
 			<h1>CABO</h1>
 		</div>
 	)

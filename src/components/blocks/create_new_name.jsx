@@ -1,10 +1,10 @@
 export default function create_new_name() {
 	return (
-		<div class="create-name">
-			<div class="create-name-wrapper">
+		<div className="create-name b-g">
+			<div className="create-name-wrapper">
 				<h1>Create your nickname for the game:</h1>
 				<input
-					class="create-name-inp"
+					className="create-name-inp"
 					type="text"
 					name="nickname"
 					placeholder="Nickname"

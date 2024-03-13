@@ -9,15 +9,15 @@ const USER_NAME_KEY = "user_name"
 const USER_ROOM_KEY = "user_room"
 const USER_ID_KEY = "user_ID"
 
-export function blocksParent() {
+export default function blocksParent() {
 	return (
-		<>
+		<div style={{border: "10px solid red"}}>
 			<Settings />
 			<Greeting />
 			<CreateNewName />
 			<SwitchPage />
 			<WaitingHall />
 			<Start />
-		</>
+		</div>
 	)
 }

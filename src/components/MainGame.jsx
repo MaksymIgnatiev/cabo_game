@@ -5,13 +5,13 @@ import { useState } from "react"
 export default function MainGame() {
 	const [as, setAs] = useState(Array.from({length: 10}, (_, i) => i + 1))
 	return (
-		<div class="wrapper">
-			<div class="top">
-				<div class="turn">
-					<button value="8" class="test"></button>
+		<div className="wrapper">
+			<div className="top">
+				<div className="turn">
+					<button value="8" className="test"></button>
 				</div>
 			</div>
-			<div class="game">
+			<div className="game">
 				<div>
 					{as.map(e => <a key={e}>{e}</a>)}
 				</div>
