@@ -1,5 +1,3 @@
-import React from "react"
-
 export default function waiting_hall() {
 	return (
 		<div class="waiting">
