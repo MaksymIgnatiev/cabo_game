@@ -8,6 +8,7 @@ export default function MainGame() {
 			</div>
 			<div className="game">
 				<h1>финансирование поступило, сайт в разработке</h1>
+				пошутил, никакого финансирования нету
 			</div>
 		</div>
 	)
