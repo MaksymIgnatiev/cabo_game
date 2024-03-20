@@ -11,6 +11,7 @@ export default function MainGame() {
 				пошутил, никакого финансирования нету
 				а хотя, пофиг, никто всё равно не узнает :trolley:
 				или может узнает? :rock:
+				:rook:
 			</div>
 		</div>
 	)
