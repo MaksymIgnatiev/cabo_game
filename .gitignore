@@ -43,3 +43,6 @@ result.txt
 .env
 
 /jstest
+/pytest
+/test
+/tstest
