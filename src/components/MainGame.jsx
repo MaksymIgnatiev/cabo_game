@@ -8,8 +8,10 @@ export default function MainGame() {
 			</div>
 			<div className="game">
 				<h1>финансирование поступило, сайт в разработке</h1>
-				пошутил, никакого финансирования нету а хотя, пофиг, никто всё равно не
-				узнает :trolley: или может узнает? :rock: :rook: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				пошутил, никакого финансирования нету а хотя, пофиг, никто всё равно не узнает
+				:trolley: или может узнает? :rock: :rook: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 		</div>
 	)
