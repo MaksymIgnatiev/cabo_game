@@ -12,8 +12,6 @@ export default function MainGame() {
 				равно не узнает :trolley: или может узнает? кто знает :chill:
 				:chill: :chill: :chill: :chill: :chill: :chill: :chill: :chill:
 				:chill: :chill: :chill: :chill: :chill: :chill: :chill: :chill:
-				:chill: :chill: :chill: :chill: :chill: :chill: :chill: :chill:
-				:chill:
 			</div>
 		</div>
 	)
