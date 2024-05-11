@@ -10,8 +10,6 @@ export default function MainGame() {
 				<h1>финансирование поступило, сайт в разработке</h1>
 				пошутил, никакого финансирования нету а хотя, пофиг, никто всё
 				равно не узнает :trolley: или может узнает? кто знает :chill:
-				:chill: :chill: :chill: :chill: :chill: :chill: :chill: :chill:
-				:chill: :chill: :chill: :chill: :chill: :chill: :chill: :chill:
 			</div>
 		</div>
 	)
