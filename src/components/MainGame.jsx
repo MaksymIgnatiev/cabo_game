@@ -7,7 +7,9 @@ export default function MainGame() {
 				</div>
 			</div>
 			<div className="game">
-				^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$
+				{
+					/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
+				}
 			</div>
 		</div>
 	)
