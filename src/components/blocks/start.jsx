@@ -3,7 +3,7 @@ export default function start() {
 		<div className="start b-g">
 			<h1>CABO game</h1>
 			<div className="buttons">
-				<button className="create"></button>
+				<button className="create">create</button>
 				<button className="join">join</button>
 			</div>
 		</div>
