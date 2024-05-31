@@ -4,6 +4,7 @@ export default function settings() {
 			<div className="settings-wrapper">
 				<div>хз</div>
 				<div>тоже хз</div>
+				<div>и тут хз</div>
 			</div>
 		</div>
 	)
