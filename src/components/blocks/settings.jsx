@@ -1,11 +1,7 @@
 export default function settings() {
 	return (
 		<div className="settings b-g">
-			<div className="settings-wrapper">
-				<div>хз</div>
-				<div>тоже хз</div>
-				<div>и тут хз</div>
-			</div>
+			<div className="settings-wrapper"></div>
 		</div>
 	)
 }
