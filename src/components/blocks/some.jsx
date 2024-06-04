@@ -1,3 +1,3 @@
-export default function () {
-	return <div>Some</div>
+export default function Some() {
+	return <div>Leet&apos;s create our own component</div>
 }
