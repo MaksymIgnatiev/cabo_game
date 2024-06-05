@@ -5,7 +5,7 @@
 
 body {
   position: relative;
-  background: radial-gradient(circle at 50% 50%, #047100, #063100);
+  background: radial-gradient(circle at 50% 50%, #034f00, #042300);
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -17,6 +17,7 @@ body {
   padding: 0;
   box-sizing: border-box;
   font-family: "Lexend Deca";
+  color: #daffd0;
 }
 
 button {
@@ -49,6 +50,22 @@ button {
 .ui-button {
   position: relative;
   border-radius: 5px;
-  padding: min(16px, 0.2rem) min(20px, 0.3rem);
+  padding: max(10px, 0.4rem) max(5px, 0.3rem);
   transition: 150ms ease-in-out;
+}
+
+.light-salad-green-color {
+  color: #06c100;
+}
+
+/*
+	Selectors
+-----------------------------------------------------------
+	Media Queries
+*/
+@media screen and (min-width: 500px) {
+  body .wrapper > .buttons {
+    gap: max(10px, 0.5rem);
+    flex-direction: row;
+  }
 }/*# sourceMappingURL=globals.css.map */

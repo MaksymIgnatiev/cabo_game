@@ -1,26 +1,19 @@
+import React from "react"
+
 type Props = {
 	text: string
 	className: string
+	onClick: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-export default function button({ text, className }: Props) {
-	const selector = `${className}-start-page-button`
+export default function Button({ text, className, onClick }: Props) {
 	return (
-		<>
-			<style>{`
-			#${selector} {
-				--content: '${text}';
-			}
-			#${selector}::after {
-				content: var(--content);
-			}
-			`}</style>
-			<button
-				id={selector}
-				className={`start-page-button ui-button ${className}`}
-			>
-				{text}
-			</button>
-		</>
+		<button
+			className={`start-page-button ui-button ${className}`}
+			style={{ "--content": `'${text}'` } as React.CSSProperties}
+			onClick={onClick}
+		>
+			{text}
+		</button>
 	)
 }
