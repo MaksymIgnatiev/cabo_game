@@ -34,15 +34,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-.eslintrc.json
-
-test.py
-test.js
-result.txt
-.env
-
-/jstest
-/pytest
-/test
-/tstest

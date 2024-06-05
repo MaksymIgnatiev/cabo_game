@@ -1,0 +1,79 @@
+$letter-delay: 0.3s;
+$letter-wait: 1.5s;
+$letter-cubic-bezier: cubic-bezier(0.31, -0.17, 0.66, 0.32);
+$letter-fade-in-duration: 0.35s;
+
+.loading-screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100dvw;
+	height: 100dvh;
+	background-color: #023d00;
+	font-size: min(3rem, 200px);
+	color: #daffd0;
+	font-family: "Lexend Deca";
+	font-weight: 600;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+	pointer-events: none;
+
+	& > span {
+		opacity: 0;
+		rotate: 0;
+		translate: 0 0;
+	}
+}
+
+#C {
+	transform-origin: 50% 50%;
+	animation: fade-in $letter-fade-in-duration linear forwards,
+		move-c 1s $letter-cubic-bezier $letter-wait + $letter-delay forwards;
+}
+#A {
+	animation: fade-in $letter-fade-in-duration linear $letter-delay * 2
+			forwards,
+		move-a 1s $letter-cubic-bezier $letter-wait + $letter-delay * 3 forwards;
+}
+#B {
+	animation: fade-in $letter-fade-in-duration linear $letter-delay forwards,
+		move-b 1s $letter-cubic-bezier $letter-wait + $letter-delay * 2 forwards;
+}
+#O {
+	animation: fade-in $letter-fade-in-duration linear $letter-delay * 3
+			forwards,
+		move-o 1s $letter-cubic-bezier $letter-wait + $letter-delay * 4 forwards;
+}
+
+@keyframes fade-in {
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes move-c {
+	to {
+		rotate: -270deg;
+		translate: -50dvw 0;
+	}
+}
+
+@keyframes move-a {
+	to {
+		translate: 0 -65dvw;
+	}
+}
+
+@keyframes move-b {
+	to {
+		translate: 0 60dvw;
+	}
+}
+
+@keyframes move-o {
+	to {
+		translate: 50dvw 0;
+	}
+}

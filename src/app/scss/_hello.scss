@@ -1,0 +1,54 @@
+.wrapper {
+	width: max(250px, 50%);
+	font-size: min(16px, 3rem);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: max(200px, 50%);
+	& > h1 {
+		text-align: center;
+	}
+	& > .buttons {
+		gap: max(10px, 0.5rem);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+}
+
+.join-game {
+	animation: move-start-buttons 20s linear infinite alternate;
+}
+
+.create-game {
+	animation: move-start-buttons 20s linear infinite alternate-reverse;
+}
+
+@keyframes move-start-buttons {
+	0% {
+		background-position: 100% 0;
+	}
+	100% {
+		background-position: 0 0;
+	}
+}
+
+.start-page-button {
+	background: linear-gradient(30deg, #007800, #003e00);
+	background-size: 2000px 50px;
+	color: #0000;
+}
+.start-page-button::after {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	color: var(--main-light-green);
+	justify-content: center;
+	align-items: center;
+}
+
+.start-page-button:hover::before {
+	opacity: 1;
+	transition: 0.5s;
+}
