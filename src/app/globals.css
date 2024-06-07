@@ -49,13 +49,17 @@ button {
 
 .ui-button {
   position: relative;
-  border-radius: 5px;
-  padding: max(10px, 0.4rem) max(5px, 0.3rem);
+  border-radius: 10px;
+  padding: max(10px, 0.1rem) max(5px, 0.2rem);
   transition: 150ms ease-in-out;
 }
 
 .light-salad-green-color {
   color: #06c100;
+}
+
+.big-cabo-letters {
+  font-size: min(3rem, 200px);
 }
 
 /*

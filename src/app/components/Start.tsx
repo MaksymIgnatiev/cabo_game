@@ -1,10 +1,10 @@
 "use client"
 
-import "../scss/_hello.scss"
+import "../scss/_start.scss"
 
-import Button from "./Hello/button"
+import Button from "./Start/button"
 
-export default function Hello() {
+export default function Start() {
 	setTimeout(() => {
 		document.querySelector(".wrapper")?.classList.remove("not-available")
 	}, 4000)

@@ -10,7 +10,7 @@ export default function Loading() {
 	}, 3_600)
 
 	return (
-		<div className="loading-screen">
+		<div className="loading-screen big-cabo-letters">
 			<span id="C">C</span>
 			<span id="A">A</span>
 			<span id="B">B</span>

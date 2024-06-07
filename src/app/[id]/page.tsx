@@ -1,14 +1,10 @@
 "use client"
 
-import React from "react"
+import Index from "@/app/page"
 import { useParams } from "next/navigation"
 
-export default function Home() {
+export default function ID() {
 	const router = useParams(),
 		{ id } = router
-	return (
-		<div>
-			<h1>ID page: {id}</h1>
-		</div>
-	)
+	return <Index id={Array.isArray(id) ? id[0] : id} />
 }
