@@ -1,16 +1,21 @@
 "use client"
 
-import "../scss/_start.scss"
+import "../scss/start.scss"
 
+import { useEffect } from "react"
 import Button from "./Start/button"
 
 export default function Start() {
-	setTimeout(() => {
-		document.querySelector(".wrapper")?.classList.remove("not-available")
-	}, 4000)
+	useEffect(() => {
+		setTimeout(() => {
+			document
+				.querySelector(".wrapper")
+				?.classList.remove("not-available")
+		}, 4000)
+	}, [])
 
 	return (
-		<div className="wrapper not-available">
+		<div className="start-page-wrapper not-available layer-data-wrapper">
 			<h1 className="welcome-title">
 				Welcome to the{" "}
 				<span className="light-salad-green-color">CABO</span> game!

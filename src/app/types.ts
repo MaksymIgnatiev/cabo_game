@@ -1,6 +1,76 @@
+// ---------- Utility types ----------
+
+export type NotEmpty<T> = keyof T extends never ? never : T
+
+type AppendToObject<T, U> = {
+	[K in keyof U]: U[K] extends
+		| string
+		| number
+		| boolean
+		| symbol
+		| bigint
+		| object
+		| Function
+		? T & { [P in K]: U[K] }
+		: never
+}[keyof U]
+
+export type PartialNonEmpty<T> = T extends object
+	? { [K in keyof T]: AppendToObject<{}, { [P in K]: T[K] }> }[keyof T]
+	: never
+
+/*
+	Utility types
+-----------------------------------------------------------
+	Parameters & Return types
+*/
+
 export type HomePageComponentParams = {
 	id?: string
 }
+
+export type GetRoomsFunctionParams<
+	E extends boolean,
+	R extends boolean,
+	I extends boolean
+> = {
+	entries: E
+	rooms: R
+	ids: I
+}
+
+export type GetRoomsReturnType<
+	E extends boolean,
+	R extends boolean,
+	I extends boolean
+> = E extends true
+	? [string, Room][]
+	: R extends true
+	? Room[]
+	: I extends true
+	? string[]
+	: Record<string, Room>
+
+export type CollectDataCostructorParams = {
+	ariaData: string
+	title: string
+	inputPlaseholder: string
+	buttonText: string
+	errorText: string
+	onSubmit: <T extends string>(text: T) => void
+}
+
+export type CollectDataParams = {
+	hasNickname: boolean
+	hasRoomId: boolean
+	toggleTransition: () => void
+}
+
+/*
+	Parameters & Return types
+-----------------------------------------------------------
+	User
+*/
 
 export type User = {
 	name: string
@@ -17,11 +87,25 @@ export type GameUser = User & {
 	turn: boolean
 }
 
+/*
+	User
+-----------------------------------------------------------
+	Room
+*/
+
 export type Room = {
 	id: number
 	users: User[]
 	turn: number
+	last_lap: boolean
+	waiting: boolean
 }
+
+/*
+	Room
+-----------------------------------------------------------
+	Card
+*/
 
 type CardWords = "peak" | "spy" | "swap"
 
@@ -44,8 +128,18 @@ export type Card<N extends CardPoints> = {
 type PeakCard = Card<7> | Card<8>
 type SpyCard = Card<9> | Card<10>
 type SwapCard = Card<11> | Card<12>
+type WordCard = PeakCard | SpyCard | SwapCard
+type RegularCard =
+	| Card<0>
+	| Card<1>
+	| Card<2>
+	| Card<3>
+	| Card<4>
+	| Card<5>
+	| Card<6>
+	| Card<13>
 
-type AnyCard = Card<CardPoints>
+type AnyCard = WordCard | RegularCard
 
 /*
 	Card
@@ -61,46 +155,32 @@ export type GameActionMessage<A extends GameAction> = {
 	user: GameUser
 	room: Room
 } & (A extends "use_card"
-	? {
-			action: GameUseCard
-			card: AnyCard
-	  }
+	? { action: GameUseCard; card: WordCard }
 	: A extends "pass"
-	? {
-			action: "pass"
-	  }
+	? { action: "pass" }
 	: A extends "take_card"
-	? {
-			action: "take_card"
-			card: AnyCard
-	  }
+	? { action: "take_card"; card: AnyCard }
 	: A extends "cabo"
-	? {
-			action: "cabo"
-	  }
-	: {})
+	? { action: "cabo" }
+	: A extends "change_cards"
+	? { action: "change_cards"; cards: AnyCard[] }
+	: never)
 
-let message: GameActionMessage<"use_card"> = {
-	user: {
-		name: "test",
-		id: 1,
-		room: 1,
-		is_admin: true,
-		lang: "en",
-		last_seen: 1,
-		cards: [],
-		points: 0,
-		turn: true,
-	},
-	room: {
-		id: 1,
-		users: [],
-		turn: 1,
-	},
-	action: "use_card_peak",
-	card: {
-		points: 9,
-		role: "peak",
-		new: true,
-	},
+/*
+	Game
+-----------------------------------------------------------
+	Config (database)
+*/
+
+export type SafeObjectPropertyForJSON =
+	| string
+	| number
+	| boolean
+	| null
+	| Array<any>
+	| Record<string, any>
+
+export type Database = {
+	users: User[]
+	rooms: Record<string, Room>
 }

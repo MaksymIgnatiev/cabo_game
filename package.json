@@ -2,8 +2,9 @@
 	"name": "next_js_app",
 	"version": "0.0.1",
 	"private": true,
+	"type": "module",
 	"scripts": {
-		"dev": "nodemon ./src/server.ts",
+		"dev": "nodemon --watch src --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm ./src/server.ts",
 		"build": "next build",
 		"start": "NODE_ENV=production node server.js"
 	},
@@ -23,6 +24,7 @@
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
 		"@types/typescript": "^2.0.0",
+		"ts-node": "^10.9.2",
 		"typescript": "^5"
 	}
 }

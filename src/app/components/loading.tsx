@@ -1,16 +1,20 @@
 "use client"
 
-import "../scss/_loading.scss"
+import "../scss/loading.scss"
+
+import { useEffect } from "react"
 
 export default function Loading() {
-	setTimeout(() => {
-		const el = document.querySelector(".loading-screen")
-		el?.classList.add("fade-out-300ms")
-		setTimeout(() => el?.remove(), 500)
-	}, 3_600)
+	useEffect(() => {
+		setTimeout(() => {
+			const el = document.querySelector(".loading-screen")
+			el?.classList.add("fade-out-300ms")
+			setTimeout(() => el?.remove(), 500)
+		}, 3_600)
+	}, [])
 
 	return (
-		<div className="loading-screen big-cabo-letters">
+		<div className="layer loading-screen big-cabo-letters">
 			<span id="C">C</span>
 			<span id="A">A</span>
 			<span id="B">B</span>

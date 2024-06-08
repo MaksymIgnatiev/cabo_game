@@ -61,14 +61,39 @@ button {
 	font-size: min(3rem, 200px);
 }
 
+.layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100dvw;
+	height: 100dvh;
+}
+
+.layer-data-wrapper {
+	width: max(250px, 50%);
+	font-size: min(16px, 3rem);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: max(250px, 70%);
+}
+
+.side-layer {
+	position: absolute;
+	width: 100dvw;
+	height: 100dvh;
+}
+
 /*
 	Selectors
 -----------------------------------------------------------
 	Media Queries
 */
 
-@media screen and (min-width: 500px) {
+@media (min-width: 500px) {
 	body .wrapper > .buttons {
+		background: red !important;
 		gap: max(10px, 0.5rem);
 		flex-direction: row;
 	}

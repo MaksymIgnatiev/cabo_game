@@ -1,0 +1,63 @@
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #023d00;
+  color: #daffd0;
+  font-family: "Lexend Deca";
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1000;
+}
+.loading-screen > span {
+  opacity: 0;
+  rotate: 0;
+  translate: 0 0;
+}
+
+#C {
+  transform-origin: 50% 50%;
+  animation: fade-in 0.35s linear forwards, move-c 1s cubic-bezier(0.31, -0.17, 0.66, 0.32) 1.8s forwards;
+}
+
+#A {
+  animation: fade-in 0.35s linear 0.6s forwards, move-a 1s cubic-bezier(0.31, -0.17, 0.66, 0.32) 2.4s forwards;
+}
+
+#B {
+  animation: fade-in 0.35s linear 0.3s forwards, move-b 1s cubic-bezier(0.31, -0.17, 0.66, 0.32) 2.1s forwards;
+}
+
+#O {
+  animation: fade-in 0.35s linear 0.9s forwards, move-o 1s cubic-bezier(0.31, -0.17, 0.66, 0.32) 2.7s forwards;
+}
+
+@keyframes fade-in {
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes move-c {
+  to {
+    rotate: -270deg;
+    translate: -50dvw 0;
+  }
+}
+@keyframes move-a {
+  to {
+    translate: 0 -80dvh;
+  }
+}
+@keyframes move-b {
+  to {
+    translate: 0 80dvh;
+  }
+}
+@keyframes move-o {
+  to {
+    translate: 50dvw 0;
+  }
+}/*# sourceMappingURL=loading.css.map */

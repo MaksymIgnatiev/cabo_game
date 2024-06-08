@@ -1,0 +1,41 @@
+$ofset-x: 10px;
+
+.settings-wrapper {
+	top: 0;
+	right: -100dvw;
+}
+
+.settings-layer {
+	position: relative;
+	&::before {
+		position: absolute;
+		content: url(/public/settings-cog-svgrepo-com.svg);
+		top: max(10px, 0.2rem);
+		left: -$ofset-x;
+		padding: max(10px, 0.2rem);
+		background-color: #060;
+		border-radius: 10px;
+		width: $ofset-x + 10px;
+		cursor: pointer;
+		transition: rotate 0.6s ease-in-out, background-color 0.2s ease-in-out;
+		&:hover {
+			rotate: 720deg;
+			background-color: #080;
+		}
+		&:active {
+			background-color: #030;
+		}
+	}
+}
+
+.settings-wrapper-active {
+	opacity: 0;
+	// animation: name duration timing-function delay iteration-count direction
+	// 	fill-mode;
+}
+
+@keyframes settings-wrapper-active-move {
+	to {
+		translate: 100dvw 0;
+	}
+}

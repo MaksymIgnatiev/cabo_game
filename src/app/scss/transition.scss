@@ -1,3 +1,5 @@
+$transition-duration: 3s;
+
 .cabo-transition {
 	display: none;
 	justify-content: center;
@@ -7,9 +9,9 @@
 	}
 }
 .cabo-transition-active {
-	animation: page-transition 3s linear forwards;
+	animation: page-transition $transition-duration linear forwards;
 	& > * {
-		animation: page-transition-content 3s linear forwards;
+		animation: page-transition-content $transition-duration linear forwards;
 	}
 }
 @keyframes page-transition {

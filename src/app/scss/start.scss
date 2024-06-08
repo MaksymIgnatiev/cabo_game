@@ -1,13 +1,6 @@
 $button-move-duration: 7s;
 
-.wrapper {
-	width: max(250px, 50%);
-	font-size: min(16px, 3rem);
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	height: max(250px, 70%);
+.start-page-wrapper {
 	& > h1 {
 		text-align: center;
 	}
