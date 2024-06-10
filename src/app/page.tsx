@@ -9,11 +9,11 @@ import {
 	LOCAL_STORAGE_USER_ID_KEY,
 } from "./data/keys"
 
+import { HomePageComponentParams } from "../../types"
 import CollectData from "./components/CollectData"
 import Loading from "./components/Loading"
 import Start from "./components/Start"
 import Transition from "./components/Transition"
-import { HomePageComponentParams } from "./types"
 
 export default function Home({ id }: HomePageComponentParams) {
 	const [userName, setUserName] = useState(""),

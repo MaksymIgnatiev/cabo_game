@@ -22,6 +22,22 @@ export type PartialNonEmpty<T> = T extends object
 /*
 	Utility types
 -----------------------------------------------------------
+	Global
+*/
+
+export type JSONString = string
+
+export type JSONValue =
+	| string
+	| number
+	| boolean
+	| null
+	| { [key: string]: JSONValue }
+	| JSONValue[]
+
+/*
+	Global
+-----------------------------------------------------------
 	Parameters & Return types
 */
 
@@ -37,6 +53,12 @@ export type GetRoomsFunctionParams<
 	entries: E
 	rooms: R
 	ids: I
+}
+
+export type GetRoomsFunctionParamsWord = {
+	entries: [string, Room][]
+	rooms: Room[]
+	ids: string[]
 }
 
 export type GetRoomsReturnType<
@@ -149,20 +171,20 @@ type AnyCard = WordCard | RegularCard
 
 type GameUseCard = `use_card_${CardWords}`
 
-type GameAction = "use_card" | "pass" | "take_card" | "cabo" | "change_cards"
+type GameActionIn = "use_card" | "pass" | "take_card" | "cabo" | "change_cards"
 
-export type GameActionMessage<A extends GameAction> = {
+export type GameActionMessageIn<Action extends GameActionIn = GameActionIn> = {
 	user: GameUser
 	room: Room
-} & (A extends "use_card"
+} & (Action extends "use_card"
 	? { action: GameUseCard; card: WordCard }
-	: A extends "pass"
+	: Action extends "pass"
 	? { action: "pass" }
-	: A extends "take_card"
+	: Action extends "take_card"
 	? { action: "take_card"; card: AnyCard }
-	: A extends "cabo"
+	: Action extends "cabo"
 	? { action: "cabo" }
-	: A extends "change_cards"
+	: Action extends "change_cards"
 	? { action: "change_cards"; cards: AnyCard[] }
 	: never)
 
@@ -184,3 +206,34 @@ export type Database = {
 	users: User[]
 	rooms: Record<string, Room>
 }
+
+/*
+	Config (database)
+-----------------------------------------------------------
+	WebSocket
+*/
+
+export type SimpleActionIn = "add_user_to_room" | "remove_user_from_room"
+
+export type SimpleActionsMessageIn<
+	Action extends SimpleActionIn = SimpleActionIn
+> = {
+	user: GameUser
+	room: number
+} & (Action extends "add_user_to_room"
+	? { action: "add_user_to_room" }
+	: Action extends "remove_user_from_room"
+	? { action: "remove_user_from_room" }
+	: {})
+
+export type WebSocketMessageIn = SimpleActionsMessageIn | GameActionMessageIn
+
+type GameActionOut = "use_card" | "pass" | "take_card" | "cabo" | "change_cards"
+
+export type GameActionMessageOut<Action extends GameActionOut = GameActionOut> =
+	{
+		user: GameUser
+		room: Room
+	} & (Action extends "use_card" ? { action: GameUseCard } : {})
+
+export type WebSocketMessageOut = {}

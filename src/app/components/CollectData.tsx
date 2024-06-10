@@ -4,8 +4,8 @@ import {
 } from "../data/keys"
 
 import { useState } from "react"
+import { CollectDataParams } from "../../../types"
 import { invisibleCarsRegex } from "../data/regexes"
-import { CollectDataParams } from "../types"
 import Constructor from "./CollectData/constructor"
 
 export default function CollectData({

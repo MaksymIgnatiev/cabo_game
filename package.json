@@ -4,9 +4,12 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "nodemon --watch src --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm ./src/server.ts",
+		"dev": "next dev",
 		"build": "next build",
-		"start": "NODE_ENV=production node server.js"
+		"start": "next start",
+		"dev:ws": "nodemon --watch server.ts --exec npx tsx server.ts --ext ts",
+		"build:ws": "tsc server.ts",
+		"start:ws": "npx tsx server.ts"
 	},
 	"dependencies": {
 		"@types/nodemon": "^1.19.6",
@@ -17,6 +20,7 @@
 		"react": "^18",
 		"react-dom": "^18",
 		"sass": "^1.77.4",
+		"tsx": "^4.15.1",
 		"ws": "^8.17.0"
 	},
 	"devDependencies": {

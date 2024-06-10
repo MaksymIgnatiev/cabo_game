@@ -1,6 +1,6 @@
 import "../../scss/collectDataConstructor.scss"
 
-import { CollectDataCostructorParams } from "@/app/types"
+import { CollectDataCostructorParams } from "@/types"
 import { useRef } from "react"
 
 export default function Constructor({
