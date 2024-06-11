@@ -2,16 +2,15 @@ $transition-duration: 3s;
 
 .cabo-transition {
 	display: none;
-	justify-content: center;
-	align-items: center;
 	& > * {
 		opacity: 0;
 	}
+	z-index: 1000000000000;
 }
 .cabo-transition-active {
-	animation: page-transition $transition-duration linear forwards;
+	animation: page-transition $transition-duration linear;
 	& > * {
-		animation: page-transition-content $transition-duration linear forwards;
+		animation: page-transition-content $transition-duration linear;
 	}
 }
 @keyframes page-transition {

@@ -1,26 +1,31 @@
-import { WebSocket, WebSocketServer } from "ws"
+import { clients, db, port } from "./database"
+import { checkWebsocketMessage, parseWebsocketMessage } from "./functions"
 
-import { newCounter } from "./functions"
-import { Database } from "./types"
+import { WebSocketServer } from "ws"
+import { JSONString } from "./types"
 
-const port = 8080,
-	wss = new WebSocketServer({ port }),
-	counter = newCounter()
-
-export const db: Database = { rooms: {}, users: [] },
-	clients: Set<WebSocket> = new Set()
+const wss = new WebSocketServer({ port })
 
 wss.on("connection", ws => {
+	console.log("New client connected")
 	clients.add(ws)
-	ws.on("message", message => {
-		clients.forEach(client => {
-			if (client.readyState === WebSocket.OPEN) {
-				client.send(message)
-			}
-		})
+	ws.on("message", (messageIn: JSONString) => {
+		const data = parseWebsocketMessage(messageIn)
+		if (!data) return
+		const message = checkWebsocketMessage(data, true)
+		if (!message) return
+
+		const { room, user, action, cmd } = message
+		if (cmd == "show_database") console.log(db)
+
+		if (action === "add_user_to_room") {
+		}
 	})
 
-	ws.on("close", () => clients.delete(ws))
+	ws.on("close", () => {
+		console.log("Client disconnected")
+		clients.delete(ws)
+	})
 })
 
 console.log(`WebSocket server started on port ${port}`)

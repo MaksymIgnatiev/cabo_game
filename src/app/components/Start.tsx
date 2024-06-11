@@ -2,20 +2,25 @@
 
 import "../scss/start.scss"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+
 import Button from "./Start/button"
 
-export default function Start() {
+export default function Start({}) {
+	const [notAvailable, setNotAvailable] = useState(true)
+
 	useEffect(() => {
 		setTimeout(() => {
-			document
-				.querySelector(".wrapper")
-				?.classList.remove("not-available")
-		}, 4000)
+			setNotAvailable(() => false)
+		}, 2500)
 	}, [])
 
 	return (
-		<div className="start-page-wrapper not-available layer-data-wrapper">
+		<div
+			className={`start-page-wrapper ${
+				notAvailable ? "not-available" : ""
+			} layer-data-wrapper`}
+		>
 			<h1 className="welcome-title">
 				Welcome to the{" "}
 				<span className="light-salad-green-color">CABO</span> game!

@@ -23,10 +23,11 @@
 			"@/*": ["./src/*"]
 		},
 		"outDir": "./dist",
-		"rootDir": "."
+		"rootDir": ".",
+		"resolveJsonModule": true
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-	"exclude": ["node_modules"],
+	"exclude": ["node_modules", "server.ts"],
 	"ts-node": {
 		"esm": true
 	}

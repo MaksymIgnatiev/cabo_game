@@ -1,10 +1,11 @@
 import "../../scss/collectDataConstructor.scss"
 
-import { CollectDataCostructorParams } from "@/types"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
+
+import { CollectDataCostructorParams } from "@/../types"
 
 export default function Constructor({
-	ariaData,
+	ariaLabel,
 	title,
 	inputPlaseholder,
 	buttonText,
@@ -17,18 +18,23 @@ export default function Constructor({
 		event.preventDefault()
 		if (inputRef.current) onSubmit(inputRef.current.value)
 	}
+	useEffect(() => {
+		if (inputRef.current) inputRef.current.focus()
+	}, [])
 
 	return (
-		<div className="layer" aria-data={ariaData}>
+		<div className="layer" aria-label={ariaLabel}>
 			<div className="layer-data-wrapper">
 				<h2>{title}</h2>
 				<form onSubmit={handleSubmit}>
 					<div className="input-container">
 						<input
 							ref={inputRef}
-							className="ui-input"
+							className="ui-input default-green"
 							type="text"
 							placeholder={inputPlaseholder}
+							spellCheck={false}
+							autoCorrect="off"
 						/>
 						<p
 							className={`collect-data-input-error-text ${
@@ -40,7 +46,7 @@ export default function Constructor({
 							{errorText}
 						</p>
 					</div>
-					<button type="submit" className="ui-button">
+					<button type="submit" className="ui-button default-green">
 						{buttonText}
 					</button>
 				</form>

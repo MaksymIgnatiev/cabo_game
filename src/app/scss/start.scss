@@ -1,4 +1,6 @@
-$button-move-duration: 7s;
+@import "variables.scss";
+
+$button-move-duration: 6s;
 
 .start-page-wrapper {
 	& > h1 {
@@ -34,7 +36,7 @@ $button-move-duration: 7s;
 
 .start-page-button {
 	background: linear-gradient(45deg, #007800, #003e00);
-	background-size: 2000px 50px;
+	background-size: 300px 50px;
 	color: #0000;
 	box-shadow: 0 0 max(40px, 0.3rem) max(10px, 0.05rem) #001b013f;
 	font-size: max(16px, 0.1rem);
@@ -51,7 +53,7 @@ $button-move-duration: 7s;
 		position: absolute;
 		inset: 0;
 		display: flex;
-		color: var(--main-light-green);
+		color: $main-light-green;
 		justify-content: center;
 		align-items: center;
 	}
@@ -63,4 +65,11 @@ $button-move-duration: 7s;
 
 .start-page-button:active::before {
 	background-color: #002302;
+}
+
+@media (min-width: 768px) {
+	.start-page-wrapper .buttons {
+		flex-direction: row;
+		gap: max(20px, 1rem);
+	}
 }

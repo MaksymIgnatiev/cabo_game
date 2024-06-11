@@ -1,6 +1,6 @@
 import "dotenv/config"
 
-import { clients, db } from "./server"
+import { clients, db } from "./database"
 import {
 	GameUser,
 	GetRoomsFunctionParams,
@@ -18,12 +18,18 @@ export function getDatabase() {
 	return db
 }
 
-export function stringifyData(data: Record<string, JSONValue>) {
+export function stringifyData<
+	T extends JSONValue[] | Record<string, JSONValue>
+>(data: T) {
 	return JSON.stringify(data, null, "\t")
 }
 
 export function random(min = 0, max = 10 * 9) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export function loadToGlobalView<N extends string>(name: N, func: Function) {
+	;(globalThis as any)[name] = func
 }
 
 /*
@@ -102,21 +108,23 @@ export function createRoom<I extends number>(id: I): Room {
 -----------------------------------------------------------
 	User
 */
-
-export function getUsers<I extends number>(roodId?: I) {
-	if (roodId) return db.rooms[roodId].users
-	else return db.users
+export function getUsers(): User[]
+export function getUsers<I extends number>(roomId?: I): GameUser[] | undefined
+export function getUsers<I extends number>(
+	roomId?: I
+): (User | GameUser)[] | undefined {
+	return roomId ? db.rooms[roomId]?.users : db.users
 }
 
 export function createUser<
 	N extends string,
 	I extends number,
 	A extends boolean
->(name: N, id: I, options: { roomId?: number; is_admin?: A } = {}) {
+>(name: N, id: I, options: { roomId?: number; is_admin?: A } = {}): User {
 	return {
 		name,
 		id,
-		room: options.roomId ?? 0,
+		roomId: options.roomId,
 		is_admin: options.is_admin ?? false,
 		lang: "en",
 		last_seen: Date.now(),
@@ -126,6 +134,7 @@ export function createUser<
 export function createGameUser<U extends User>(user: U): GameUser {
 	return {
 		...user,
+		roomId: user.roomId ?? -1,
 		cards: [],
 		points: 0,
 		turn: false,
@@ -142,10 +151,14 @@ export function checkUser<I extends number, N extends string>(
 	return false
 }
 
-export function getUser<I extends number, N extends string>(
-	options: PartialNonEmpty<{ id: I; name: N }>
+export function getUser<I extends number, N extends string, R extends number>(
+	options: PartialNonEmpty<{ id: I; name: N; roomId?: R }>
 ) {
-	const users = getUsers()
+	if (!options) return
+	let users
+	users = "roomId" in options ? getUsers(options.roomId) : getUsers()
+	if (!users) return
+
 	if ("id" in options) return users.find(user => user.id === options.id)
 	else if ("name" in options)
 		return users.find(user => user.name === options.name)
@@ -155,15 +168,43 @@ export function deleteUser<I extends number, N extends string>(
 	options: PartialNonEmpty<{ id: I; name: N }>
 ) {
 	if ("id" in options) {
-		const id = options.id as number
-		delete db.rooms[getUser({ id })!.room].users[
-			getUsers().findIndex(user => user.id === id)
-		]
+		const id = options.id as number,
+			user = getUser({ id })
+
+		if (!user?.roomId) return
+
+		const userIndexInRoom = getUsers(user.roomId)?.findIndex(
+			user => user.id === id
+		)
+		if (userIndexInRoom === undefined) return
+
+		delete db.rooms[user.roomId].users[userIndexInRoom]
 		delete db.users[id]
 	} else if ("name" in options) {
-		const name = options.name as N
-		// Your logic here
+		const name = options.name as string,
+			user = getUser({ name })
+
+		if (!user?.roomId) return
+
+		const userIndexInRoom = getUsers(user.roomId)?.findIndex(
+			user => user.name === name
+		)
+
+		if (userIndexInRoom === undefined) return
+		delete db.rooms[user.roomId].users[userIndexInRoom]
+		delete db.users[db.users.findIndex(user => user.name === name)]
 	}
+}
+
+export function setValueInLocalStorage<K extends string, V extends string>(
+	key: K,
+	value: V
+) {
+	localStorage.setItem(key, value)
+}
+
+export function getValueFromLocalStorage<K extends string>(key: K) {
+	return localStorage.getItem(key)
 }
 
 /*
@@ -186,7 +227,7 @@ export function id(generator: Generator<number, any, never>): number {
 	WebSocket
 */
 
-export function parseWebsocketMessage(message: string) {
+export function parseWebsocketMessage(message: JSONString, dev = false) {
 	try {
 		return JSON.parse(message) as WebSocketMessageIn
 	} catch (e) {
@@ -194,8 +235,20 @@ export function parseWebsocketMessage(message: string) {
 	}
 }
 
-export function checkWebsocketMessage(message: WebSocketMessageIn) {
-	return message.user && message.room && message.action
+export function checkWebsocketMessage(
+	message: WebSocketMessageIn,
+	dev = false
+) {
+	return dev
+		? message
+		: !!(
+				message.user &&
+				message.action &&
+				message.room &&
+				message.type === "to_server"
+		  )
+		? message
+		: null
 }
 
 export function sendMessageToAllClients(message: JSONString) {
@@ -206,4 +259,10 @@ export function sendMessageToAllClients(message: JSONString) {
 
 export function sendMessageToClient(client: WebSocket, message: JSONString) {
 	client.readyState === WebSocket.OPEN ? client.send(message) : 0
+}
+
+export function sendMessageToWebSocket<
+	T extends Record<string, JSONValue> | JSONString
+>(client: WebSocket, message: T) {
+	client.send(typeof message === "string" ? message : stringifyData(message))
 }

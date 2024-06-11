@@ -1,17 +1,48 @@
+@import "./mixins.scss";
+
+.input-container {
+	position: relative;
+}
+
 .collect-data-input-error-text {
 	position: absolute;
-	bottom: 0;
-	color: red;
+	font-size: max(13px, 0.1rem);
+	top: 100%;
+	color: #fe1616;
+	text-align: center;
+	width: 100%;
 	opacity: 0;
+	transform: translateY(-15px);
+	transition: opacity 0.6s ease-in, transform 0.6s ease-in;
+
+	&::before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 0;
+		width: 100%;
+		box-shadow: 0 0 50px 20px #062e0033;
+		z-index: -1;
+	}
 }
 
 .collect-data-input-error-active {
-	animation: collect-data-input-error-active-move 2s ease-in forwards;
+	opacity: 1;
+	transform: translateY(8px);
 }
 
-@keyframes collect-data-input-error-active-move {
-	to {
-		opacity: 1;
-		// translate: 0 -(max(20px, 0.3rem));
+.layer-data-wrapper {
+	h2 {
+		text-align: center;
 	}
+	form {
+		@include display-flex-center;
+		flex-direction: column;
+		gap: max(40px, 2rem);
+	}
+}
+
+[aria-label="Get Nickname"],
+[aria-label="Get Room ID"] {
+	background: #040;
 }

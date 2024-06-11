@@ -1,15 +1,17 @@
+@import "./scss/mixins.scss";
+@import "./scss/variables.scss";
+
 :root {
-	--main-light-green: #daffd0;
-	font-size: 10dvw;
+	font-size: min(10dvw, 10dvh);
+	overflow: hidden;
 }
 
 body {
 	position: relative;
 	background: radial-gradient(circle at 50% 50%, #034f00, #042300);
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	height: 100dvh;
+	@include display-flex-center;
+	overflow: hidden;
 }
 
 * {
@@ -49,7 +51,8 @@ button {
 .ui-button {
 	position: relative;
 	border-radius: 10px;
-	padding: max(10px, 0.1rem) max(5px, 0.2rem);
+	font-size: max(10px, min(30px, 0.5rem));
+	padding: max(10px, 0.15rem) max(15px, 0.2rem);
 	transition: 150ms ease-in-out;
 }
 
@@ -67,6 +70,7 @@ button {
 	left: 0;
 	width: 100dvw;
 	height: 100dvh;
+	@include display-flex-center;
 }
 
 .layer-data-wrapper {
@@ -83,6 +87,39 @@ button {
 	position: absolute;
 	width: 100dvw;
 	height: 100dvh;
+}
+
+.ui-input {
+	padding: max(10px, 0.07rem) max(10px, 0.1rem);
+	border: none;
+	font-size: max(15px, min(20px, 0.2rem));
+	border-radius: max(10px, 0.06rem);
+	width: max(150px, 1.2rem);
+	&:focus {
+		outline: none;
+	}
+
+	caret-color: #042300;
+}
+
+.ui-button.default-green {
+	background: #060;
+	color: $main-light-green;
+	&:hover {
+		background: #080;
+	}
+	&:active {
+		background: #040;
+	}
+}
+
+.ui-input.default-green {
+	background: #060;
+	color: $main-light-green;
+	caret-color: $main-light-green;
+	&::placeholder {
+		color: $main-light-green;
+	}
 }
 
 /*
