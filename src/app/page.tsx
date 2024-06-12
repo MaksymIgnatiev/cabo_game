@@ -2,32 +2,39 @@
 
 import "./scss/main.scss"
 
-import { useEffect, useState } from "react"
+import { GameUser, HomePageComponentParams, User } from "../../types"
 import {
+	LOCAL_STORAGE_NICKNAME_KEY,
+	LOCAL_STORAGE_ROOM_ID_KEY,
+	LOCAL_STORAGE_USER_ID_KEY,
+	LOCAL_STORAGE_USER_SETTINGS_KEY,
+} from "./data/keys"
+import {
+	createDefaultUserSettings,
 	createUser,
 	getValueFromLocalStorage,
 	id,
 	loadToGlobalView,
 	sendMessageToWebSocket,
 } from "../../functions"
-import { GameUser, HomePageComponentParams, User } from "../../types"
-import {
-	LOCAL_STORAGE_NICKNAME_KEY,
-	LOCAL_STORAGE_ROOM_ID_KEY,
-	LOCAL_STORAGE_USER_ID_KEY,
-} from "./data/keys"
+import { useEffect, useState } from "react"
 
-import { counter } from "../../database"
 import CollectData from "./components/CollectData"
 import Loading from "./components/Loading"
 import MainGame from "./components/MainGame"
 import Settings from "./components/Settings"
 import Start from "./components/Start"
 import Transition from "./components/Transition"
+import { counter } from "../../database"
 
 export default function Home({ URLRoomId }: HomePageComponentParams) {
 	const [user, setUser] = useState<User | GameUser>(
 			createUser(" ", -1, { roomId: -1 })
+		),
+		[userSettings, setUserSettings] = useState(
+			createDefaultUserSettings({
+				settButOnpPos: "top-right",
+			})
 		),
 		[transition, setTransition] = useState(false),
 		onWindowLoad = () => {
@@ -48,8 +55,6 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 				id: +(userIDLocalStorage ?? 0) || id(counter),
 				roomId: +(roomIDLocalStorage ?? 0) || o.roomId,
 			}))
-			if (!userIDLocalStorage)
-				localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, user.id + "")
 
 			loadToGlobalView("sendMessageToWebSocket", sendMessageToWebSocket)
 
@@ -64,10 +69,21 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 		checkForData = () => {
 			if (user.name === " ") setUser(o => ({ ...o, name: "" }))
 			if (user.roomId === -1) setUser(o => ({ ...o, roomId: 0 }))
-		}
+		},
+		checkValidUser = () =>
+			user.name !== " " && user.roomId !== -1 && user.id !== -1
 
 	useEffect(onWindowLoad, [])
-	useEffect(() => console.log(user), [user])
+
+	useEffect(() => {
+		localStorage.setItem(
+			LOCAL_STORAGE_USER_SETTINGS_KEY,
+			JSON.stringify(userSettings)
+		)
+	}, [userSettings])
+
+	useEffect(() => console.log(user), [user]) // development only
+
 	return (
 		<>
 			<Loading />
@@ -78,8 +94,11 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 				toggleTransition={toggleTransition}
 				setUser={setUser}
 			/>
-			{user.name && user.roomId && user.id ? <MainGame /> : ""}
-			<Settings />
+			{checkValidUser() ? <MainGame /> : ""}
+			<Settings
+				userSettings={userSettings}
+				setUserSettings={setUserSettings}
+			/>
 			<Transition active={transition} />
 		</>
 	)

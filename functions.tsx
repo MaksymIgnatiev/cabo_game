@@ -11,6 +11,7 @@ import {
 	PartialNonEmpty,
 	Room,
 	User,
+	UserSettings,
 	WebSocketMessageIn,
 } from "./types"
 
@@ -30,6 +31,17 @@ export function random(min = 0, max = 10 * 9) {
 
 export function loadToGlobalView<N extends string>(name: N, func: Function) {
 	;(globalThis as any)[name] = func
+}
+
+export function setValueInLocalStorage<K extends string, V extends string>(
+	key: K,
+	value: V
+) {
+	localStorage.setItem(key, value)
+}
+
+export function getValueFromLocalStorage<K extends string>(key: K) {
+	return localStorage.getItem(key)
 }
 
 /*
@@ -196,15 +208,15 @@ export function deleteUser<I extends number, N extends string>(
 	}
 }
 
-export function setValueInLocalStorage<K extends string, V extends string>(
-	key: K,
-	value: V
-) {
-	localStorage.setItem(key, value)
-}
-
-export function getValueFromLocalStorage<K extends string>(key: K) {
-	return localStorage.getItem(key)
+export function createDefaultUserSettings(
+	options?: PartialNonEmpty<UserSettings>
+): UserSettings {
+	const defaultSettings: UserSettings = {
+		lang: "en",
+		settButOnpPos: "top-right",
+		settButClsPos: "top-right",
+	}
+	return { ...defaultSettings, ...options }
 }
 
 /*

@@ -1,4 +1,4 @@
-import "../../scss/collectDataConstructor.scss"
+import "../../scss/CollectData/constructor.scss"
 
 import { useEffect, useRef } from "react"
 

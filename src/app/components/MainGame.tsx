@@ -1,3 +1,7 @@
 export default function MainGame() {
-	return <main></main>
+	return (
+		<main>
+			<h1>Main Game</h1>
+		</main>
+	)
 }

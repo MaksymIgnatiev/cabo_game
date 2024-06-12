@@ -1,14 +1,46 @@
 @import "./variables.scss";
 
-$ofset-x: 0.7rem;
+$ofset-x: 0.8rem;
+$ofset-y: 0.8rem;
+$width: min(40px, 0.7rem);
+
+@mixin left {
+	left: max(20px, min(50px, $ofset-x * 0.5));
+}
+@mixin right {
+	left: calc(100% - min(60px, $ofset-x * 1.5));
+}
+@mixin top {
+	top: 20px;
+}
+@mixin bottom {
+	top: calc(100% - max(20px, $ofset-y * 1.2));
+}
+@mixin move-top {
+	top: -40px;
+}
+@mixin move-bottom {
+	top: calc(100% + 40px);
+}
 
 .settings-wrapper {
 	top: 0;
-	right: -100dvw;
-	transition: 1s ease-in-out;
+	transition: 600ms ease-in-out;
+	outline: 2px solid $main-soft-green;
 }
-.settings-wrapper-active {
-	right: 0;
+
+.settings-wrapper-right {
+	right: -101dvw;
+	&.active {
+		right: 0;
+	}
+}
+
+.settings-wrapper-left {
+	left: -101dvw;
+	&.active {
+		left: 0;
+	}
 }
 
 .settings-layer {
@@ -16,17 +48,16 @@ $ofset-x: 0.7rem;
 	width: 100%;
 	height: 100%;
 	background: #030;
+	padding: max(20px, 1rem);
 }
 
 .settings-button {
 	position: absolute;
-	top: 20px;
 	background: url(/settings-cog-svgrepo-com.svg);
 	aspect-ratio: 1/1;
-	transition: 400ms ease-in-out;
-	width: $ofset-x;
+	transition: 500ms ease-in-out;
+	width: $width;
 	filter: invert(90%);
-	background-size: contain;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -37,20 +68,79 @@ $ofset-x: 0.7rem;
 		background: #0000;
 		border-radius: 20px;
 		transition: 400ms ease-in-out;
-		filter: none;
 	}
 	&:hover {
 		rotate: 180deg;
 	}
 	&:active::before {
-		background: #d00;
+		background: #f8f;
+	}
+	&::after {
+		content: "";
+		background: url(/settings-cog-svgrepo-com.svg);
+		position: absolute;
+		aspect-ratio: 1/1;
+		transition: 400ms ease-in-out;
+		width: $width;
+		background-size: contain;
 	}
 }
 
-.settings-open-button {
-	left: ($ofset-x) * -1.7;
+.settings-open-button-top-right {
+	@include top;
+	@include right;
+	&.active {
+		@include move-top;
+	}
 }
 
-.settings-close-button {
-	right: ($ofset-x) * 0.8;
+.settings-open-button-top-left {
+	@include top;
+	@include left;
+	&.active {
+		@include move-top;
+	}
+}
+
+.settings-open-button-bottom-right {
+	@include bottom;
+	@include right;
+	&.active {
+		@include move-bottom;
+	}
+}
+
+.settings-open-button-bottom-left {
+	@include bottom;
+	@include left;
+	&.active {
+		@include move-bottom;
+	}
+}
+
+.settings-close-button-top-right {
+	top: 20px;
+	right: max(30px, $ofset-x * 0.7);
+}
+
+.settings-close-button-top-left {
+	top: 20px;
+	left: max(30px, $ofset-x * 0.7);
+}
+
+.settings-close-button-bottom-right {
+	top: calc(100% - $ofset-y);
+	right: max(30px, $ofset-x * 0.7);
+}
+
+.settings-close-button-bottom-left {
+	top: calc(100% - $ofset-y);
+	left: max(30px, $ofset-x * 0.7);
+}
+
+.setSettingsOpenButton {
+	span {
+		font-size: 0.5rem;
+		margin: 0 0 50px 0;
+	}
 }

@@ -37,6 +37,8 @@ export type JSONValue =
 	| { [key: string]: JSONValue }
 	| JSONValue[]
 
+export type Language = "en" | "ru"
+
 /*
 	Global
 -----------------------------------------------------------
@@ -91,6 +93,11 @@ export type CollectDataParams = {
 	setUser: React.Dispatch<SetStateAction<User | GameUser>>
 }
 
+export type SettingsParams = {
+	userSettings: UserSettings
+	setUserSettings: React.Dispatch<SetStateAction<UserSettings>>
+}
+
 /*
 	Parameters & Return types
 -----------------------------------------------------------
@@ -102,7 +109,7 @@ export type User = {
 	id: number
 	roomId: number | undefined
 	is_admin: boolean
-	lang: "en" | "ru"
+	lang: Language
 	last_seen: number
 }
 
@@ -111,6 +118,16 @@ export type GameUser = User & {
 	cards: Card<CardPoints>[]
 	points: number
 	turn: boolean
+}
+
+export type Side = "left" | "right"
+export type Position = "top" | "bottom"
+export type SettingsButtonPosition = `${Position}-${Side}`
+
+export type UserSettings = {
+	lang: Language
+	settButOnpPos: SettingsButtonPosition
+	settButClsPos: SettingsButtonPosition
 }
 
 /*
@@ -173,25 +190,6 @@ type AnyCard = WordCard | RegularCard
 	Game
 */
 
-type GameUseCard = `use_card_${CardWords}`
-
-type GameActionIn = "use_card" | "pass" | "take_card" | "cabo" | "change_cards"
-
-export type GameActionMessageIn<Action extends GameActionIn = GameActionIn> = {
-	user: GameUser
-	room: Room
-} & (Action extends "use_card"
-	? { action: GameUseCard; card: WordCard }
-	: Action extends "pass"
-	? { action: "pass" }
-	: Action extends "take_card"
-	? { action: "take_card"; card: AnyCard }
-	: Action extends "cabo"
-	? { action: "cabo" }
-	: Action extends "change_cards"
-	? { action: "change_cards"; cards: AnyCard[] }
-	: never)
-
 /*
 	Game
 -----------------------------------------------------------
@@ -217,7 +215,33 @@ export type Database = {
 	WebSocket
 */
 
-export type SimpleActionIn = "add_user_to_room" | "remove_user_from_room"
+type GameUseCard = `use_card_${CardWords}`
+
+type GameActionIn = "use_card" | "pass" | "take_card" | "cabo" | "change_cards"
+
+export type SimpleActionIn =
+	| "add_user_to_room"
+	| "remove_user_from_room"
+	| "rename_user"
+
+type GameActionOut = "use_card" | "pass" | "take_card" | "cabo" | "change_cards"
+
+export type SimpleActionOut = "add_user_to_room" | "remove_user_from_room"
+
+export type GameActionMessageIn<Action extends GameActionIn = GameActionIn> = {
+	user: GameUser
+	room: Room
+} & (Action extends "use_card"
+	? { action: GameUseCard; card: WordCard }
+	: Action extends "pass"
+	? { action: "pass" }
+	: Action extends "take_card"
+	? { action: "take_card"; card: AnyCard }
+	: Action extends "cabo"
+	? { action: "cabo" }
+	: Action extends "change_cards"
+	? { action: "change_cards"; cards: AnyCard[] }
+	: never)
 
 export type SimpleActionsMessageIn<
 	Action extends SimpleActionIn = SimpleActionIn
@@ -228,6 +252,8 @@ export type SimpleActionsMessageIn<
 	? { action: "add_user_to_room" }
 	: Action extends "remove_user_from_room"
 	? { action: "remove_user_from_room" }
+	: Action extends "rename_user"
+	? { action: "rename_user"; newName: string }
 	: never)
 
 export type WebSocketMessageIn = (
@@ -237,10 +263,6 @@ export type WebSocketMessageIn = (
 	type: "to_server"
 	cmd?: "show_database" | "show_users" | "show_rooms"
 }
-
-type GameActionOut = "use_card" | "pass" | "take_card" | "cabo" | "change_cards"
-
-export type SimpleActionOut = "add_user_to_room" | "remove_user_from_room"
 
 export type SimpleActionsMessageOut<
 	Action extends SimpleActionOut = SimpleActionOut
