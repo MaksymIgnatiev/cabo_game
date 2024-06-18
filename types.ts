@@ -39,6 +39,38 @@ export type JSONValue =
 
 export type Language = "en" | "ru"
 
+export type HexSymbol =
+	| "0"
+	| "1"
+	| "2"
+	| "3"
+	| "4"
+	| "5"
+	| "6"
+	| "7"
+	| "8"
+	| "9"
+	| "a"
+	| "b"
+	| "c"
+	| "d"
+	| "e"
+	| "f"
+	| "A"
+	| "B"
+	| "C"
+	| "D"
+	| "E"
+	| "F"
+
+export type HexColorLength = 3 | 6
+
+export type HEXString = `#${string}`
+
+export type RGBString = `rgb(${number}, ${number}, ${number})`
+
+export type HSLString = `hsl(${number}, ${number}%, ${number}%)`
+
 /*
 	Global
 -----------------------------------------------------------

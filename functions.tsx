@@ -1,11 +1,12 @@
 import "dotenv/config"
 
-import { clients, db } from "./database"
 import {
 	GameUser,
 	GetRoomsFunctionParams,
 	GetRoomsFunctionParamsWord,
 	GetRoomsReturnType,
+	HEXString,
+	HSLString,
 	JSONString,
 	JSONValue,
 	PartialNonEmpty,
@@ -14,6 +15,7 @@ import {
 	UserSettings,
 	WebSocketMessageIn,
 } from "./types"
+import { clients, db } from "./database"
 
 export function getDatabase() {
 	return db
@@ -42,6 +44,38 @@ export function setValueInLocalStorage<K extends string, V extends string>(
 
 export function getValueFromLocalStorage<K extends string>(key: K) {
 	return localStorage.getItem(key)
+}
+
+export function HEXToHSL<S extends HEXString>(hex: S): HSLString {
+	const p = hex.length === 4 ? 1 : 2,
+		r = parseInt(hex.slice(1, p), 16) / 255,
+		g = parseInt(hex.slice(p, p * 2), 16) / 255,
+		b = parseInt(hex.slice(p * 2, p * 3), 16) / 255,
+		max = Math.max(r, g, b),
+		min = Math.min(r, g, b)
+
+	let h = 0,
+		s = 0,
+		l = (max + min) / 2
+
+	if (max !== min) {
+		s = l > 0.5 ? (max - min) / (2 - max - min) : (max - min) / (max + min)
+		switch (max) {
+			case r:
+				h = (g - b) / (max - min) + (g < b ? 6 : 0)
+				break
+			case g:
+				h = (b - r) / (max - min) + 2
+				break
+			case b:
+				h = (r - g) / (max - min) + 4
+				break
+		}
+		h /= 6
+	}
+	return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(
+		l * 100
+	)}%)`
 }
 
 /*
