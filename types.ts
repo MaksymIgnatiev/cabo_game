@@ -62,7 +62,7 @@ export type HexSymbol =
 	| "D"
 	| "E"
 	| "F"
-
+// the best comment ever (in types file)
 export type HexColorLength = 3 | 6
 
 export type HEXString = `#${string}`
