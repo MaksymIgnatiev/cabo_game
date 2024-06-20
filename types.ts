@@ -62,14 +62,22 @@ export type HexSymbol =
 	| "D"
 	| "E"
 	| "F"
-// the best comment ever (in types file)
+
 export type HexColorLength = 3 | 6
+
+export type Hue = number
+
+export type Saturation = number
+
+export type Lightness = number
 
 export type HEXString = `#${string}`
 
 export type RGBString = `rgb(${number}, ${number}, ${number})`
 
 export type HSLString = `hsl(${number}, ${number}%, ${number}%)`
+
+export type HSLTuple = [Hue, Saturation, Lightness]
 
 /*
 	Global

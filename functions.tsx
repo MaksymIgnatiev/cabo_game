@@ -1,5 +1,6 @@
 import "dotenv/config"
 
+import { clients, db } from "./database"
 import {
 	GameUser,
 	GetRoomsFunctionParams,
@@ -7,15 +8,17 @@ import {
 	GetRoomsReturnType,
 	HEXString,
 	HSLString,
+	Hue,
 	JSONString,
 	JSONValue,
+	Lightness,
 	PartialNonEmpty,
 	Room,
+	Saturation,
 	User,
 	UserSettings,
 	WebSocketMessageIn,
 } from "./types"
-import { clients, db } from "./database"
 
 export function getDatabase() {
 	return db
@@ -46,7 +49,20 @@ export function getValueFromLocalStorage<K extends string>(key: K) {
 	return localStorage.getItem(key)
 }
 
-export function HEXToHSL<S extends HEXString>(hex: S): HSLString {
+export function HEXToHSL<S extends HEXString>(hex: S): HSLString
+export function HEXToHSL<S extends HEXString, B extends boolean = true>(
+	hex: S,
+	values: B
+): [Hue, Saturation, Lightness]
+export function HEXToHSL<S extends HEXString, B extends boolean = false>(
+	hex: S,
+	values: B
+): HSLString
+
+export function HEXToHSL<S extends HEXString, B extends boolean>(
+	hex: S,
+	values = false as B
+): [Hue, Saturation, Lightness] | HSLString {
 	const p = hex.length === 4 ? 1 : 2,
 		r = parseInt(hex.slice(1, p), 16) / 255,
 		g = parseInt(hex.slice(p, p * 2), 16) / 255,
@@ -73,10 +89,12 @@ export function HEXToHSL<S extends HEXString>(hex: S): HSLString {
 		}
 		h /= 6
 	}
-	return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(
-		l * 100
-	)}%)`
+	;[h, s, l] = [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)]
+	if (values) return [h, s, l]
+	return `hsl(${h}, ${s}%, ${l}%)`
 }
+
+let a = HEXToHSL("#000", true)
 
 /*
 	Global
