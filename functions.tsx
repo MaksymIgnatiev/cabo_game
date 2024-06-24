@@ -2,6 +2,7 @@ import "dotenv/config"
 
 import { clients, db } from "./database"
 import {
+	AnyUser,
 	GameUser,
 	GetRoomsFunctionParams,
 	GetRoomsFunctionParamsWord,
@@ -172,11 +173,9 @@ export function createRoom<I extends number>(id: I): Room {
 ------------------------------------------------------------
 	User
 */
-export function getUsers(): User[]
+export function getUsers(): AnyUser[]
 export function getUsers<I extends number>(roomId?: I): GameUser[] | undefined
-export function getUsers<I extends number>(
-	roomId?: I
-): (User | GameUser)[] | undefined {
+export function getUsers<I extends number>(roomId?: I): AnyUser[] | undefined {
 	return roomId ? db.rooms[roomId]?.users : db.users
 }
 
@@ -186,6 +185,7 @@ export function createUser<
 	A extends boolean
 >(name: N, id: I, options: { roomId?: number; is_admin?: A } = {}): User {
 	return {
+		type: "user",
 		name,
 		id,
 		roomId: options.roomId,
@@ -198,11 +198,12 @@ export function createUser<
 export function createGameUser<U extends User>(user: U): GameUser {
 	return {
 		...user,
+		type: "game_user",
 		roomId: user.roomId ?? -1,
 		cards: [],
 		points: 0,
 		turn: false,
-	}
+	} as GameUser
 }
 
 export function checkUser<I extends number, N extends string>(
@@ -235,16 +236,19 @@ export function deleteUser<I extends number, N extends string>(
 		const id = options.id as number,
 			user = getUser({ id })
 
-		if (!user?.roomId) return
+		if (user?.roomId) {
+			const userIndexInRoom = getUsers(user.roomId)?.findIndex(
+				user => user.id === id
+			)
+			if (userIndexInRoom === undefined) return
 
-		const userIndexInRoom = getUsers(user.roomId)?.findIndex(
-			user => user.id === id
-		)
-		if (userIndexInRoom === undefined) return
+			delete db.rooms[user.roomId].users[userIndexInRoom]
+			delete db.users[id]
+			return
+		}
+	}
 
-		delete db.rooms[user.roomId].users[userIndexInRoom]
-		delete db.users[id]
-	} else if ("name" in options) {
+	if ("name" in options) {
 		const name = options.name as string,
 			user = getUser({ name })
 

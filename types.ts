@@ -144,7 +144,7 @@ export type SettingsParams = {
 	User
 */
 
-export type User = {
+export type BaseUser = {
 	name: string
 	id: number
 	roomId: number | undefined
@@ -153,12 +153,19 @@ export type User = {
 	last_seen: number
 }
 
-export type GameUser = User & {
+export type User = BaseUser & {
+	type: "user"
+}
+
+export type GameUser = BaseUser & {
+	type: "game_user"
 	roomId: number
 	cards: Card<CardPoints>[]
 	points: number
 	turn: boolean
 }
+
+export type AnyUser = User | GameUser
 
 export type Side = "left" | "right"
 export type Position = "top" | "bottom"
@@ -245,7 +252,7 @@ export type SafeObjectPropertyForJSON =
 	| Record<string, any>
 
 export type Database = {
-	users: User[]
+	users: (User | GameUser)[]
 	rooms: Record<string, Room>
 }
 
