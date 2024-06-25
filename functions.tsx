@@ -229,39 +229,19 @@ export function getUser<I extends number, N extends string, R extends number>(
 		return users.find(user => user.name === options.name)
 }
 
-export function deleteUser<I extends number, N extends string>(
-	options: PartialNonEmpty<{ id: I; name: N }>
-) {
-	if ("id" in options) {
-		const id = options.id as number,
-			user = getUser({ id })
+export function deleteUser<I extends number>(options: { id: I } | I) {
+	const id = (typeof options === "object" ? options.id : options) as number,
+		user = getUser({ id })
 
-		if (user?.roomId) {
-			const userIndexInRoom = getUsers(user.roomId)?.findIndex(
-				user => user.id === id
-			)
-			if (userIndexInRoom === undefined) return
+	if (!user?.roomId) return
+	const userIndexInRoom = getUsers(user.roomId)?.findIndex(
+		user => user.id === id
+	)
+	if (userIndexInRoom === undefined) return
 
-			delete db.rooms[user.roomId].users[userIndexInRoom]
-			delete db.users[id]
-			return
-		}
-	}
-
-	if ("name" in options) {
-		const name = options.name as string,
-			user = getUser({ name })
-
-		if (!user?.roomId) return
-
-		const userIndexInRoom = getUsers(user.roomId)?.findIndex(
-			user => user.name === name
-		)
-
-		if (userIndexInRoom === undefined) return
-		delete db.rooms[user.roomId].users[userIndexInRoom]
-		delete db.users[db.users.findIndex(user => user.name === name)]
-	}
+	delete db.rooms[user.roomId].users[userIndexInRoom]
+	delete db.users[id]
+	return
 }
 
 export function createDefaultUserSettings(
