@@ -168,7 +168,9 @@ export type GameUser = BaseUser & {
 export type AnyUser = User | GameUser
 
 export type Side = "left" | "right"
+
 export type Position = "top" | "bottom"
+
 export type SettingsButtonPosition = `${Position}-${Side}`
 
 export type UserSettings = {
