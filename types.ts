@@ -218,9 +218,13 @@ export type Card<N extends CardPoints> = {
 }
 
 type PeakCard = Card<7> | Card<8>
+
 type SpyCard = Card<9> | Card<10>
+
 type SwapCard = Card<11> | Card<12>
+
 type WordCard = PeakCard | SpyCard | SwapCard
+
 type RegularCard =
 	| Card<0>
 	| Card<1>
