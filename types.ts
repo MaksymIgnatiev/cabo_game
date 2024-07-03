@@ -350,9 +350,3 @@ export type WebSocketMessageOut = (
 ) & {
 	type: "to_client"
 }
-
-// the best comment ever (part 2)
-// the best comment ever (part 3)
-// the best comment ever (part 4)
-// the best comment ever (part 5)
-// the best comment ever (part 6)
