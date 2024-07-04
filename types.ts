@@ -328,24 +328,23 @@ export type SimpleActionsMessageOut<
 	? { action: "remove_user_from_room" }
 	: never)
 
-export type GameActionMessageOut<Action extends GameActionOut = GameActionOut> =
-	{
-		user: GameUser
-		room: Room
-	} & (Action extends "use_card"
-		? { action: GameUseCard; card: WordCard }
-		: Action extends "pass"
-		? { action: "pass" }
-		: Action extends "take_card"
-		? { action: "take_card"; card: AnyCard }
-		: Action extends "cabo" | "change_cards"
-		? { action: "cabo" }
-		: Action extends "change_cards"
-		? { action: "change_cards"; cards: AnyCard[] }
-		: never)
+export type GameActionMessageOut<Action extends GameActionOut> = {
+	user: GameUser
+	room: Room
+} & (Action extends "use_card"
+	? { action: GameUseCard; card: WordCard }
+	: Action extends "pass"
+	? { action: "pass" }
+	: Action extends "take_card"
+	? { action: "take_card"; card: AnyCard }
+	: Action extends "cabo"
+	? { action: "cabo" }
+	: Action extends "change_cards"
+	? { action: "change_cards"; cards: AnyCard[] }
+	: never)
 
 export type WebSocketMessageOut = (
-	| GameActionMessageOut
+	| GameActionMessageOut<GameActionOut>
 	| SimpleActionsMessageOut
 ) & {
 	type: "to_client"
