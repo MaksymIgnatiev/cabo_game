@@ -249,14 +249,6 @@ type AnyCard = WordCard | RegularCard
 	Config (database)
 */
 
-export type SafeObjectPropertyForJSON =
-	| string
-	| number
-	| boolean
-	| null
-	| Array<any>
-	| Record<string, any>
-
 export type Database = {
 	users: (User | GameUser)[]
 	rooms: Record<string, Room>
