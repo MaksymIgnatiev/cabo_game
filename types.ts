@@ -130,7 +130,7 @@ export type CollectDataParams = {
 	hasNickname: boolean
 	hasRoomId: boolean
 	toggleTransition: () => void
-	setUser: React.Dispatch<SetStateAction<User | GameUser>>
+	setUser: React.Dispatch<SetStateAction<User>>
 }
 
 export type SettingsParams = {

@@ -2,13 +2,7 @@
 
 import "./scss/main.scss"
 
-import { GameUser, HomePageComponentParams, User } from "../../types"
-import {
-	LOCAL_STORAGE_NICKNAME_KEY,
-	LOCAL_STORAGE_ROOM_ID_KEY,
-	LOCAL_STORAGE_USER_ID_KEY,
-	LOCAL_STORAGE_USER_SETTINGS_KEY,
-} from "./data/keys"
+import { useEffect, useState } from "react"
 import {
 	createDefaultUserSettings,
 	createUser,
@@ -17,20 +11,24 @@ import {
 	loadToGlobalView,
 	sendMessageToWebSocket,
 } from "../../functions"
-import { useEffect, useState } from "react"
+import { HomePageComponentParams, User } from "../../types"
+import {
+	LOCAL_STORAGE_NICKNAME_KEY,
+	LOCAL_STORAGE_ROOM_ID_KEY,
+	LOCAL_STORAGE_USER_ID_KEY,
+	LOCAL_STORAGE_USER_SETTINGS_KEY,
+} from "./data/keys"
 
+import { counter } from "../../database"
 import CollectData from "./components/CollectData"
 import Loading from "./components/Loading"
 import MainGame from "./components/MainGame"
 import Settings from "./components/Settings"
 import Start from "./components/Start"
 import Transition from "./components/Transition"
-import { counter } from "../../database"
 
 export default function Home({ URLRoomId }: HomePageComponentParams) {
-	const [user, setUser] = useState<User | GameUser>(
-			createUser(" ", -1, { roomId: -1 })
-		),
+	const [user, setUser] = useState<User>(createUser(" ", -1, { roomId: -1 })),
 		[userSettings, setUserSettings] = useState(
 			createDefaultUserSettings({
 				settButOnpPos: "top-right",
