@@ -77,8 +77,6 @@ export type RGBString = `rgb(${number}, ${number}, ${number})`
 
 export type HSLString = `hsl(${number}, ${number}%, ${number}%)`
 
-export type HSLTuple = [Hue, Saturation, Lightness]
-
 /*
 	Global
 ------------------------------------------------------------
