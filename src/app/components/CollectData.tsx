@@ -5,7 +5,7 @@ import {
 } from "../data/keys"
 
 import { useState } from "react"
-import { counter } from "../../../database"
+import { userID } from "../../../database"
 import { id } from "../../../functions"
 import { CollectDataParams } from "../../../types"
 import { invisibleCarsRegex } from "../data/regexes"
@@ -44,7 +44,7 @@ export default function CollectData({
 		checkNickname = (nick: string) => {
 			if (validNickname(nick)) {
 				toggleTransition()
-				const userId = id(counter)
+				const userId = id(userID)
 				localStorage.setItem(LOCAL_STORAGE_NICKNAME_KEY, nick)
 				localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, userId + "")
 				setUser(o => ({

@@ -19,7 +19,7 @@ import {
 	LOCAL_STORAGE_USER_SETTINGS_KEY,
 } from "./data/keys"
 
-import { counter } from "../../database"
+import { userID } from "../../database"
 import CollectData from "./components/CollectData"
 import Loading from "./components/Loading"
 import MainGame from "./components/MainGame"
@@ -50,7 +50,7 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 			setUser(o => ({
 				...o,
 				name: userNameLocalStorage ?? o.name,
-				id: +(userIDLocalStorage ?? 0) || id(counter),
+				id: +(userIDLocalStorage ?? 0) || id(userID),
 				roomId: +(roomIDLocalStorage ?? 0) || o.roomId,
 			}))
 

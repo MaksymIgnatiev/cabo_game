@@ -1,8 +1,12 @@
 import "dotenv/config"
 
+import { CMD_SHOW, keysInWebsocketMessage } from "@/app/data/tests"
 import { clients, db } from "./database"
 import {
 	AnyUser,
+	Card,
+	CardPoint,
+	FullCMD,
 	GameUser,
 	GetRoomsFunctionParams,
 	GetRoomsFunctionParamsWord,
@@ -10,6 +14,7 @@ import {
 	HEXString,
 	HSLString,
 	Hue,
+	IsRoleCard,
 	JSONString,
 	JSONValue,
 	Lightness,
@@ -31,12 +36,19 @@ export function stringifyData<
 	return JSON.stringify(data, null, "\t")
 }
 
-export function random(min = 0, max = 10 * 9) {
+export function random<Min extends number, Max extends number>(
+	min: Min = 0 as Min,
+	max: Max = (10 * 9) as Max
+) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 export function loadToGlobalView<N extends string>(name: N, func: Function) {
-	;(globalThis as any)[name] = func
+	Object.defineProperty(globalThis, name, {
+		value: func,
+		writable: false,
+		configurable: false,
+	})
 }
 
 export function setValueInLocalStorage<K extends string, V extends string>(
@@ -50,24 +62,34 @@ export function getValueFromLocalStorage<K extends string>(key: K) {
 	return localStorage.getItem(key)
 }
 
+export function validHEXString(hex: string): hex is HEXString {
+	return hex[0] === "#" && (hex.length === 4 || hex.length === 7)
+}
+
 export function HEXToHSL<S extends HEXString>(hex: S): HSLString
 export function HEXToHSL<S extends HEXString, B extends boolean = true>(
 	hex: S,
-	values: B
+	values: true
 ): [Hue, Saturation, Lightness]
 export function HEXToHSL<S extends HEXString, B extends boolean = false>(
 	hex: S,
-	values: B
+	values: false
 ): HSLString
 
 export function HEXToHSL<S extends HEXString, B extends boolean>(
 	hex: S,
 	values = false as B
-): [Hue, Saturation, Lightness] | HSLString {
-	const p = hex.length === 4 ? 1 : 2,
-		r = parseInt(hex.slice(1, p), 16) / 255,
-		g = parseInt(hex.slice(p, p * 2), 16) / 255,
-		b = parseInt(hex.slice(p * 2, p * 3), 16) / 255,
+): B extends true ? [Hue, Saturation, Lightness] : HSLString {
+	const p = hex.length === 4 ? 1 : 2
+	let rs = hex.slice(1, 1 + p),
+		gs = hex.slice(1 + p, 1 + p * 2),
+		bs = hex.slice(1 + p * 2, 1 + p * 3)
+
+	if (p === 1) [rs, gs, bs] = [rs + rs, gs + gs, bs + bs]
+
+	const r = parseInt(rs, 16) / 255,
+		g = parseInt(gs, 16) / 255,
+		b = parseInt(bs, 16) / 255,
 		max = Math.max(r, g, b),
 		min = Math.min(r, g, b)
 
@@ -91,11 +113,72 @@ export function HEXToHSL<S extends HEXString, B extends boolean>(
 		h /= 6
 	}
 	;[h, s, l] = [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)]
-	if (values) return [h, s, l]
-	return `hsl(${h}, ${s}%, ${l}%)`
+	if (values)
+		return [h, s, l] as B extends true
+			? [Hue, Saturation, Lightness]
+			: HSLString
+	return `hsl(${h}, ${s}%, ${l}%)` as B extends true
+		? [Hue, Saturation, Lightness]
+		: HSLString
 }
 
-let a = HEXToHSL("#000", true)
+export function shuffleArray<A extends any[]>(array: A) {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1))
+		;[array[i], array[j]] = [array[j], array[i]]
+	}
+	return array
+}
+
+export function range<E extends number>(end: E): number[]
+export function range<S extends number, E extends number>(
+	start: S,
+	end: E
+): number[]
+export function range<S extends number, E extends number>(
+	start: S = 0 as S,
+	end: E = 0 as E
+) {
+	return Array.from(
+		{ length: end <= 0 ? start : end - start },
+		(_, i) => (end <= 0 ? 0 : start) + i
+	)
+}
+
+/**
+ * Makes text and backbgound colorful using `ANSI` escape characters
+ * @param str Text to be colored
+ * @param param1 `rgb` tuple which will represent 3 color chanels for `rgb` text color
+ * @param param2 `rgb` tuple which will represent 3 color chanels for `rgb` background color
+ * @returns `ANSI` string with mixed color around text
+ */
+export function colorText<
+	T extends string,
+	C extends [number, number, number],
+	B extends [number, number, number]
+>(str: T, options: PartialNonEmpty<{ text: C; background: B }>) {
+	let [tr, tg, tb, br, bg, bb] = [
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+	] as (number | undefined)[]
+	if ("text" in options)
+		(tr = options.text[0]), (tg = options.text[1]), (tb = options.text[2])
+
+	if ("background" in options)
+		(br = options.background[0]),
+			(bg = options.background[1]),
+			(bb = options.background[2])
+
+	return `\u001b[${tr !== undefined ? `38;2;${tr || ""};${tg};${tb}` : ""}${
+		br !== undefined
+			? `${tr !== undefined ? ";" : ""}48;2;${br};${bg};${bb}`
+			: ""
+	}m${str}\u001b[0m`
+}
 
 /*
 	Global
@@ -269,14 +352,22 @@ export function id(generator: Generator<number, any, never>): number {
 	return generator.next().value
 }
 
+export function* cardSequence<P extends number>(prevPoint: P) {
+	const arr = range(1, 13)
+	let cards = shuffleArray(arr)
+	while (cards[0] === prevPoint) cards = shuffleArray(arr)
+	yield* cards
+}
+
 /*
 	Counters
 ------------------------------------------------------------
 	WebSocket
 */
 
-export function parseWebsocketMessage(message: JSONString, dev = false) {
+export function parseWebsocketMessage(message: unknown) {
 	try {
+		if (typeof message !== "string") return null
 		return JSON.parse(message) as WebSocketMessageIn
 	} catch (e) {
 		return null
@@ -289,12 +380,7 @@ export function checkWebsocketMessage(
 ) {
 	return dev
 		? message
-		: !!(
-				message.user &&
-				message.action &&
-				message.room &&
-				message.type === "to_server"
-		  )
+		: keysInWebsocketMessage.every(key => Object.hasOwn(message, key))
 		? message
 		: null
 }
@@ -313,4 +399,75 @@ export function sendMessageToWebSocket<
 	T extends Record<string, JSONValue> | JSONString
 >(client: WebSocket, message: T) {
 	client.send(typeof message === "string" ? message : stringifyData(message))
+}
+
+/*
+	WebSocket
+------------------------------------------------------------
+	WebSocket Server
+*/
+
+export function processCMD<C extends FullCMD>(cmd: C) {
+	const parts = cmd.split(" "),
+		command = parts.shift()
+	switch (command) {
+		case "show": {
+			const option = parts.shift() as
+				| (typeof CMD_SHOW)[number]
+				| undefined
+
+			if (!option) return false
+			if (option === "db") console.log(db)
+			else if (option === "users") console.log(getUsers())
+			else if (option === "rooms") console.log(getRooms())
+			else return false
+			return true
+		}
+	}
+}
+
+/*
+	WebSocket Server
+------------------------------------------------------------
+	Game
+*/
+
+export function checkUsersCards<U extends GameUser, C extends Card[]>(
+	user: U,
+	cards: C
+) {
+	return cards.every(card => user.cards.includes(card))
+}
+
+export function checkSameCards<C extends Card[]>(cards: C) {
+	return cards.every(card => cards[0].points === card.points)
+}
+
+export function getCardRole<C extends CardPoint>(points: C): IsRoleCard<C> {
+	if (points >= 7 || points <= 8) return "peak" as IsRoleCard<C>
+	else if (points >= 9 || points <= 10) return "spy" as IsRoleCard<C>
+	else if (points >= 11 || points <= 12) return "swap" as IsRoleCard<C>
+	return null as IsRoleCard<C>
+}
+
+export function createCard<P extends CardPoint>(points: P): Card<P> {
+	return {
+		points,
+		role: getCardRole(points),
+		new: true,
+	}
+}
+
+export function generateCard(): Card
+export function generateCard<I extends boolean>(initial: I = false as I): Card {
+	const points = random(1, 13) as CardPoint
+	return {
+		points,
+		role: getCardRole(points),
+		new: initial,
+	}
+}
+
+export function generateCards<N extends number>(count: N) {
+	return Array.from({ length: count }, generateCard)
 }

@@ -5,4 +5,5 @@ import { Database } from "./types"
 export const db: Database = { rooms: {}, users: [] },
 	clients: Set<WebSocket> = new Set(),
 	port = 8080,
-	counter = newCounter()
+	userID = newCounter(),
+	roomID = newCounter()
