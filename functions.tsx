@@ -38,7 +38,7 @@ export function stringifyData<
 
 export function random<Min extends number, Max extends number>(
 	min: Min = 0 as Min,
-	max: Max = (10 * 9) as Max
+	max: Max = (10 ** 9) as Max
 ) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
