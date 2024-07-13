@@ -444,9 +444,9 @@ export function checkSameCards<C extends Card[]>(cards: C) {
 }
 
 export function getCardRole<C extends CardPoint>(points: C): IsRoleCard<C> {
-	if (points >= 7 || points <= 8) return "peak" as IsRoleCard<C>
-	else if (points >= 9 || points <= 10) return "spy" as IsRoleCard<C>
-	else if (points >= 11 || points <= 12) return "swap" as IsRoleCard<C>
+	if (points == 7 || points == 8) return "peak" as IsRoleCard<C>
+	else if (points == 9 || points == 10) return "spy" as IsRoleCard<C>
+	else if (points == 11 || points == 12) return "swap" as IsRoleCard<C>
 	return null as IsRoleCard<C>
 }
 
@@ -459,6 +459,7 @@ export function createCard<P extends CardPoint>(points: P): Card<P> {
 }
 
 export function generateCard(): Card
+export function generateCard<I extends boolean>(initial: I): Card
 export function generateCard<I extends boolean>(initial: I = false as I): Card {
 	const points = random(1, 13) as CardPoint
 	return {
