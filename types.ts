@@ -47,9 +47,15 @@ export type Saturation = number
 
 export type Lightness = number
 
+export type Red = number
+
+export type Green = number
+
+export type Blue = number
+
 export type HEXString = `#${string}`
 
-export type RGBString = `rgb(${number}, ${number}, ${number})`
+export type RGBString = `rgb(${Red}, ${Green}, ${Blue})`
 
 export type HSLString = `hsl(${Hue}, ${Saturation}%, ${Lightness}%)`
 
