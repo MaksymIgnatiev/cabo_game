@@ -19,6 +19,7 @@ function processRawMessage(messageIn: JSONString) {
 	if (!message) return
 
 	const { room, user, action, cmd } = message
+
 	if (cmd) processCMD(cmd) // debug proposed
 
 	if (action === "add_user_to_room") {
