@@ -28,6 +28,7 @@ function processRawMessage(messageIn: JSONString) {
 
 wss.on("connection", ws => {
 	console.log("New client connected")
+
 	clients.add(ws)
 
 	ws.on("message", processRawMessage)
