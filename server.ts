@@ -12,7 +12,7 @@ import { JSONString } from "./types"
 const wss = new WebSocketServer({ port })
 
 function processRawMessage(messageIn: JSONString) {
-	const data = parseWebsocketMessage(messageIn)
+	const data = parseWebsocketMessage(messageIn, "server")
 	if (!data) return
 
 	const message = checkWebsocketMessage(data, true)

@@ -24,6 +24,7 @@ import {
 	User,
 	UserSettings,
 	WebSocketMessageIn,
+	WebSocketMessageOut,
 } from "./types"
 
 export function getDatabase() {
@@ -365,10 +366,25 @@ export function* cardSequence<P extends number>(prevPoint: P) {
 	WebSocket
 */
 
-export function parseWebsocketMessage(message: unknown) {
+export function parseWebsocketMessage<P extends "server" | "client">(
+	message: unknown,
+	place: P
+): (P extends "server" ? WebSocketMessageIn : WebSocketMessageOut) | null {
 	try {
 		if (typeof message !== "string") return null
-		return JSON.parse(message) as WebSocketMessageIn
+		const data = JSON.parse(message)
+		if (typeof data !== "object") return null
+		return place === "server"
+			? (data as
+					| (P extends "server"
+							? WebSocketMessageIn
+							: WebSocketMessageOut)
+					| null)
+			: (data as
+					| (P extends "server"
+							? WebSocketMessageIn
+							: WebSocketMessageOut)
+					| null)
 	} catch (e) {
 		return null
 	}
