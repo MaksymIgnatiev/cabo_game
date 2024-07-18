@@ -345,7 +345,7 @@ export function createDefaultUserSettings(
 	Counters
 */
 
-export function* newCounter(i = 1): Generator<number, void, never> {
+export function* counter(i = 1): Generator<number, void, never> {
 	while (1) yield i++
 }
 

@@ -1,5 +1,8 @@
 import { SetStateAction } from "react"
 
+type TheBestTypeNameButNotTheBestUsacaseBecauseThisTypeDescribesTheWorstTypeInTypescitpEverAndYouWillBePunishedForItIfYouWillUseIt =
+	any
+
 // ---------- Utility types ----------
 
 export type NotEmpty<T> = keyof T extends never ? never : T
@@ -234,7 +237,7 @@ type RegularCard =
 ------------------------------------------------------------
 	Game
 */
-//
+
 /*
 	Game
 ------------------------------------------------------------
@@ -272,28 +275,29 @@ export type SimpleActionIn = SimpleAction
 
 export type SimpleActionOut = SimpleAction
 
-export type GameActionMessageIn<Action extends GameActionIn = GameActionIn> =
-	Action extends "use_card"
-		? { action: GameUseCard; card: WordCard }
-		: Action extends "pass"
-		? { action: "pass" }
-		: Action extends "take_card"
-		? { action: "take_card"; card: Card }
-		: Action extends "cabo"
-		? { action: "cabo" }
-		: Action extends "change_cards"
-		? { action: "change_cards"; cards: Card[] }
-		: never
+export type GameActionMessageIn<Action extends GameActionIn = GameActionIn> = {
+	actionType: "game"
+} & (Action extends "use_card"
+	? { action: "use_card"; card: WordCard; word: CardWord }
+	: Action extends "pass"
+	? { action: "pass" }
+	: Action extends "take_card"
+	? { action: "take_card"; card: Card }
+	: Action extends "cabo"
+	? { action: "cabo" }
+	: Action extends "change_cards"
+	? { action: "change_cards"; cards: Card[] }
+	: never)
 
 export type SimpleActionsMessageIn<
 	Action extends SimpleActionIn = SimpleActionIn
-> = Action extends "add_user_to_room"
+> = { actionType: "config" } & (Action extends "add_user_to_room"
 	? { action: "add_user_to_room" }
 	: Action extends "remove_user_from_room"
 	? { action: "remove_user_from_room" }
 	: Action extends "rename_user"
 	? { action: "rename_user"; newName: string }
-	: never
+	: never)
 
 export type WebSocketMessageIn = {
 	user: GameUser
