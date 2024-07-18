@@ -1,7 +1,5 @@
 import "dotenv/config"
 
-import { CMD_SHOW, keysInWebsocketMessage } from "@/app/data/tests"
-import { clients, db } from "./database"
 import {
 	AnyUser,
 	Card,
@@ -26,6 +24,8 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
+import { CMD_SHOW, keysInWebsocketMessage } from "@/app/data/tests"
+import { clients, db } from "./database"
 
 export function getDatabase() {
 	return db
@@ -221,25 +221,27 @@ export function getRooms<
 >(
 	options?: PartialNonEmpty<GetRoomsFunctionParams<E, R, I>> | W
 ): GetRoomsReturnType<E, R, I> {
-	const defaultOptions = {
-			entries: false,
-			ids: false,
-			rooms: false,
-		},
-		isObjectOptions =
+	const allOptions = Object.assign(
+			{
+				entries: false,
+				ids: false,
+				rooms: false,
+			},
 			typeof options === "object"
 				? options
-				: { [options ?? "entries"]: true },
-		allOptions = { ...defaultOptions, ...isObjectOptions },
+				: { [options ?? "entries"]: true }
+		),
 		rooms = db.rooms
-	if (allOptions.entries || options === undefined)
-		return Object.entries(rooms) as GetRoomsReturnType<E, R, I>
-	else if (allOptions.ids)
-		return Object.keys(rooms) as GetRoomsReturnType<E, R, I>
-	else if (allOptions.rooms)
-		return Object.values(rooms) as GetRoomsReturnType<E, R, I>
 
-	return rooms as GetRoomsReturnType<E, R, I>
+	return (
+		allOptions.entries
+			? Object.entries(rooms)
+			: allOptions.ids
+			? Object.keys(rooms)
+			: allOptions.rooms
+			? Object.values(rooms)
+			: rooms
+	) as GetRoomsReturnType<E, R, I>
 }
 
 export function createRoom<I extends number>(id: I): Room {
@@ -252,13 +254,17 @@ export function createRoom<I extends number>(id: I): Room {
 	}
 }
 
+export function deleteRoom<I extends number>(id: I) {
+	return id > 0 ? delete db.rooms[id] : null
+}
+
 /*
 	Room
 ------------------------------------------------------------
 	User
 */
 export function getUsers(): AnyUser[]
-export function getUsers<I extends number>(roomId?: I): GameUser[] | undefined
+export function getUsers<I extends number>(roomId?: I): AnyUser[] | undefined
 export function getUsers<I extends number>(roomId?: I): AnyUser[] | undefined {
 	return roomId ? db.rooms[roomId]?.users : db.users
 }
@@ -280,37 +286,28 @@ export function createUser<
 }
 
 export function createGameUser<U extends User>(user: U): GameUser {
-	return {
-		...user,
+	return Object.assign(user, {
 		type: "game_user",
 		roomId: user.roomId ?? -1,
-		cards: [],
+		cards: [] as Card[],
 		points: 0,
 		turn: false,
-	} as GameUser
+	} as GameUser)
 }
 
-export function checkUser<I extends number, N extends string>(
-	options: PartialNonEmpty<{ id: I; name: N }>
-) {
-	const users = getUsers()
-	if ("id" in options) return users.some(user => user.id === options.id)
-	else if ("name" in options)
-		return users.some(user => user.name === options.name)
-	return false
+export function checkUser<I extends number>(id: I) {
+	return getUsers().some(user => user.id === id)
 }
 
-export function getUser<I extends number, N extends string, R extends number>(
-	options: PartialNonEmpty<{ id: I; name: N; roomId?: R }>
+export function getUser<I extends number, R extends number>(
+	options: PartialNonEmpty<{ id: I; roomId?: R }>
 ) {
 	if (!options) return
-	let users
-	users = "roomId" in options ? getUsers(options.roomId) : getUsers()
+	const users = getUsers("roomId" in options ? options.roomId : undefined)
 	if (!users) return
 
 	if ("id" in options) return users.find(user => user.id === options.id)
-	else if ("name" in options)
-		return users.find(user => user.name === options.name)
+	return
 }
 
 export function deleteUser<I extends number>(options: { id: I } | I) {
@@ -331,12 +328,14 @@ export function deleteUser<I extends number>(options: { id: I } | I) {
 export function createDefaultUserSettings(
 	options?: PartialNonEmpty<UserSettings>
 ): UserSettings {
-	const defaultSettings: UserSettings = {
-		lang: "en",
-		settButOnpPos: "top-right",
-		settButClsPos: "top-right",
-	}
-	return { ...defaultSettings, ...options }
+	return Object.assign(
+		{
+			lang: "en",
+			settButOnpPos: "top-right",
+			settButClsPos: "top-right",
+		} as UserSettings,
+		options
+	)
 }
 
 /*
