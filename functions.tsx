@@ -44,9 +44,9 @@ export function random<Min extends number, Max extends number>(
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export function loadToGlobalView<N extends string>(name: N, func: Function) {
+export function loadToGlobalView<N extends string>(name: N, value: any) {
 	Object.defineProperty(globalThis, name, {
-		value: func,
+		value,
 		writable: false,
 		configurable: false,
 	})
@@ -114,11 +114,8 @@ export function HEXToHSL<S extends HEXString, B extends boolean>(
 		h /= 6
 	}
 	;[h, s, l] = [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)]
-	if (values)
-		return [h, s, l] as B extends true
-			? [Hue, Saturation, Lightness]
-			: HSLString
-	return `hsl(${h}, ${s}%, ${l}%)` as B extends true
+
+	return (values ? [h, s, l] : `hsl(${h}, ${s}%, ${l}%)`) as B extends true
 		? [Hue, Saturation, Lightness]
 		: HSLString
 }
@@ -136,13 +133,17 @@ export function range<S extends number, E extends number>(
 	start: S,
 	end: E
 ): number[]
-export function range<S extends number, E extends number>(
-	start: S = 0 as S,
-	end: E = 0 as E
+export function range<S extends number, E extends number, R extends number>(
+	start = 0 as S,
+	end = 0 as E,
+	step = 1 as R
 ) {
 	return Array.from(
-		{ length: end <= 0 ? start : end - start },
-		(_, i) => (end <= 0 ? 0 : start) + i
+		{
+			length:
+				(end <= 0 ? start : end - start) / step + (end <= 0 ? 0 : 1),
+		},
+		(_, i) => (end <= 0 ? 0 : start) + i * step
 	)
 }
 
@@ -285,29 +286,28 @@ export function createUser<
 	}
 }
 
-export function createGameUser<U extends User>(user: U): GameUser {
+export function createGameUser<U extends User>(user: U) {
 	return Object.assign(user, {
 		type: "game_user",
 		roomId: user.roomId ?? -1,
 		cards: [] as Card[],
 		points: 0,
 		turn: false,
-	} as GameUser)
+	}) as unknown as GameUser
 }
 
 export function checkUser<I extends number>(id: I) {
 	return getUsers().some(user => user.id === id)
 }
 
-export function getUser<I extends number, R extends number>(
-	options: PartialNonEmpty<{ id: I; roomId?: R }>
-) {
-	if (!options) return
-	const users = getUsers("roomId" in options ? options.roomId : undefined)
-	if (!users) return
+export function getUser<I extends number, R extends number>(options: {
+	id: I
+	roomId?: R
+}) {
+	const users = getUsers(options.roomId)
+	if (!users) return null
 
-	if ("id" in options) return users.find(user => user.id === options.id)
-	return
+	return users.find(user => user.id === options.id)
 }
 
 export function deleteUser<I extends number>(options: { id: I } | I) {
@@ -322,7 +322,6 @@ export function deleteUser<I extends number>(options: { id: I } | I) {
 
 	delete db.rooms[user.roomId].users[userIndexInRoom]
 	delete db.users[id]
-	return
 }
 
 export function createDefaultUserSettings(
@@ -353,9 +352,9 @@ export function id(generator: Generator<number, any, never>): number {
 }
 
 export function* cardSequence<P extends number>(prevPoint: P) {
-	const arr = range(1, 13)
-	let cards = shuffleArray(arr)
-	while (cards[0] === prevPoint) cards = shuffleArray(arr)
+	const arr = range(1, 13),
+		cards = shuffleArray(arr)
+	while (cards[0] === prevPoint) shuffleArray(arr)
 	yield* cards
 }
 
@@ -373,17 +372,7 @@ export function parseWebsocketMessage<P extends "server" | "client">(
 		if (typeof message !== "string") return null
 		const data = JSON.parse(message)
 		if (typeof data !== "object") return null
-		return place === "server"
-			? (data as
-					| (P extends "server"
-							? WebSocketMessageIn
-							: WebSocketMessageOut)
-					| null)
-			: (data as
-					| (P extends "server"
-							? WebSocketMessageIn
-							: WebSocketMessageOut)
-					| null)
+		return data
 	} catch (e) {
 		return null
 	}
@@ -406,14 +395,14 @@ export function sendMessageToAllClients(message: JSONString) {
 	)
 }
 
-export function sendMessageToClient(client: WebSocket, message: JSONString) {
-	client.readyState === WebSocket.OPEN ? client.send(message) : 0
-}
-
-export function sendMessageToWebSocket<
+export function sendMessageToClient<
 	T extends Record<string, JSONValue> | JSONString
 >(client: WebSocket, message: T) {
-	client.send(typeof message === "string" ? message : stringifyData(message))
+	client.readyState === WebSocket.OPEN
+		? client.send(
+				typeof message === "string" ? message : stringifyData(message)
+		  )
+		: 0
 }
 
 /*
@@ -423,22 +412,28 @@ export function sendMessageToWebSocket<
 */
 
 export function processCMD<C extends FullCMD>(cmd: C) {
+	if (!cmd.trim()) return false
+
 	const parts = cmd.split(" "),
 		command = parts.shift()
+
+	let done = false
 	switch (command) {
 		case "show": {
 			const option = parts.shift() as
 				| (typeof CMD_SHOW)[number]
 				| undefined
 
-			if (!option) return false
-			if (option === "db") console.log(db)
-			else if (option === "users") console.log(getUsers())
-			else if (option === "rooms") console.log(getRooms())
-			else return false
-			return true
+			if (option) {
+				if (option === "db") console.log(db)
+				else if (option === "users") console.log(getUsers())
+				else if (option === "rooms") console.log(getRooms())
+				else break
+				done = true
+			}
 		}
 	}
+	return done
 }
 
 /*
