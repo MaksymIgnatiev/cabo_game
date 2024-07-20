@@ -24,7 +24,7 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
-import { CMD_SHOW, keysInWebsocketMessage } from "@/app/data/tests"
+import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
 import { clients, db } from "./database"
 
 export function getDatabase() {
@@ -38,8 +38,8 @@ export function stringifyData<
 }
 
 export function random<Min extends number, Max extends number>(
-	min: Min = 0 as Min,
-	max: Max = (10 ** 9) as Max
+	min = 0 as Min,
+	max = (10 ** 9) as Max
 ) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -470,7 +470,7 @@ export function createCard<P extends CardPoint>(points: P): Card<P> {
 
 export function generateCard(): Card
 export function generateCard<I extends boolean>(initial: I): Card
-export function generateCard<I extends boolean>(initial: I = false as I): Card {
+export function generateCard<I extends boolean>(initial = false as I): Card {
 	const points = random(1, 13) as CardPoint
 	return {
 		points,

@@ -1,11 +1,11 @@
 import { WebSocket, WebSocketServer } from "ws"
-import { clients, port } from "./database"
 import {
 	checkWebsocketMessage,
 	colorText,
 	parseWebsocketMessage,
 	processCMD,
 } from "./functions"
+import { clients, port } from "./database"
 
 import { JSONString } from "./types"
 
