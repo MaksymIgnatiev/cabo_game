@@ -1,5 +1,7 @@
 import "dotenv/config"
 
+import { clients, db } from "./database"
+import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
 import {
 	AnyUser,
 	Card,
@@ -24,8 +26,6 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
-import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
-import { clients, db } from "./database"
 
 export function getDatabase() {
 	return db
@@ -482,3 +482,9 @@ export function generateCard<I extends boolean>(initial = false as I): Card {
 export function generateCards<N extends number>(count: N) {
 	return Array.from({ length: count }, generateCard)
 }
+
+/*
+	Game
+------------------------------------------------------------
+	...
+*/
