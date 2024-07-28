@@ -2,15 +2,6 @@
 
 import "./scss/main.scss"
 
-import { useEffect, useState } from "react"
-import {
-	createDefaultUserSettings,
-	createUser,
-	getValueFromLocalStorage,
-	id,
-	loadToGlobalView,
-	sendMessageToWebSocket,
-} from "../../functions"
 import { HomePageComponentParams, User } from "../../types"
 import {
 	LOCAL_STORAGE_NICKNAME_KEY,
@@ -18,14 +9,23 @@ import {
 	LOCAL_STORAGE_USER_ID_KEY,
 	LOCAL_STORAGE_USER_SETTINGS_KEY,
 } from "./data/keys"
+import {
+	createDefaultUserSettings,
+	createUser,
+	getValueFromLocalStorage,
+	id,
+	loadToGlobalView,
+	sendMessageToClient,
+} from "../../functions"
+import { useEffect, useState } from "react"
 
-import { userID } from "../../database"
 import CollectData from "./components/CollectData"
 import Loading from "./components/Loading"
 import MainGame from "./components/MainGame"
 import Settings from "./components/Settings"
 import Start from "./components/Start"
 import Transition from "./components/Transition"
+import { userID } from "../../database"
 
 export default function Home({ URLRoomId }: HomePageComponentParams) {
 	const [user, setUser] = useState<User>(createUser(" ", -1, { roomId: -1 })),
@@ -47,14 +47,15 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 				)
 			// ws = new WebSocket(`ws://localhost:${port}`)
 
-			setUser(o => ({
-				...o,
-				name: userNameLocalStorage ?? o.name,
-				id: +(userIDLocalStorage ?? 0) || id(userID),
-				roomId: +(roomIDLocalStorage ?? 0) || o.roomId,
-			}))
+			setUser(o =>
+				Object.assign(o, {
+					name: userNameLocalStorage ?? o.name,
+					id: +(userIDLocalStorage ?? 0) || id(userID),
+					roomId: +(roomIDLocalStorage ?? 0) || o.roomId,
+				})
+			)
 
-			loadToGlobalView("sendMessageToWebSocket", sendMessageToWebSocket)
+			loadToGlobalView("sendMessageToClient", sendMessageToClient)
 
 			return () => {
 				// ws.close()

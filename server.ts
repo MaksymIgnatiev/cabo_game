@@ -61,7 +61,5 @@ function handleNewConnection(ws: WebSocket) {
 wss.on("connection", handleNewConnection)
 
 console.log(
-	`✔️  WebSocket server started on port: ${colorText(`${port}`, {
-		text: [0, 150, 0],
-	})}`
+	`✔️  WebSocket server started on port: ${colorText(`${port}`, "#00cc00")}`
 )

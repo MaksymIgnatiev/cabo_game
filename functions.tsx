@@ -1,11 +1,10 @@
 import "dotenv/config"
 
-import { clients, db } from "./database"
-import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
 import {
 	AnyUser,
 	Card,
 	CardPoint,
+	ColorTextOptionParams,
 	FullCMD,
 	GameUser,
 	GetRoomsFunctionParams,
@@ -26,6 +25,8 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
+import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
+import { clients, db } from "./database"
 
 export function getDatabase() {
 	return db
@@ -44,8 +45,8 @@ export function random<Min extends number, Max extends number>(
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export function loadToGlobalView<N extends string>(name: N, value: any) {
-	Object.defineProperty(globalThis, name, {
+export function loadToGlobalView<N extends string>(key: N, value: any) {
+	Object.defineProperty(globalThis, key, {
 		value,
 		writable: false,
 		configurable: false,
@@ -120,6 +121,19 @@ export function HEXToHSL<S extends HEXString, B extends boolean>(
 		: HSLString
 }
 
+export function HEXtoRGB<S extends HEXString>(
+	hex: S
+): [number, number, number] {
+	const p = hex.length === 4 ? 1 : 2
+	return [
+		parseInt(hex.slice(1, 1 + p), 16),
+		parseInt(hex.slice(1 + p, 1 + p * 2), 16),
+		parseInt(hex.slice(1 + p * 2, 1 + p * 3), 16),
+	]
+}
+
+/** Shuffles the given array in-place
+ * @param array Array to be shuffled */
 export function shuffleArray<A extends any[]>(array: A) {
 	for (let i = array.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1))
@@ -128,10 +142,22 @@ export function shuffleArray<A extends any[]>(array: A) {
 	return array
 }
 
+/**
+ * Range generator for generating ranges. Accepts up to 3 parameters.
+ * @param start start of a range (default = 0)
+ * @param end end of a range (default = 0)
+ * @param step step betweeen values (default = 1)
+ *
+ */
 export function range<E extends number>(end: E): number[]
 export function range<S extends number, E extends number>(
 	start: S,
 	end: E
+): number[]
+export function range<S extends number, E extends number, R extends number>(
+	start: S,
+	end: E,
+	step: R
 ): number[]
 export function range<S extends number, E extends number, R extends number>(
 	start = 0 as S,
@@ -150,15 +176,23 @@ export function range<S extends number, E extends number, R extends number>(
 /**
  * Makes text and backbgound colorful using `ANSI` escape characters
  * @param str Text to be colored
- * @param param1 `rgb` tuple which will represent 3 color chanels for `rgb` text color
- * @param param2 `rgb` tuple which will represent 3 color chanels for `rgb` background color
+ * @param options param that reepresents HEX color of text foreground /
+ * tuple with 3 colors that represents RGB chanels /
+ * object with fields `text` and/or `background`, each of which represents a tuple with 3 values for rgb chanels for foreground/background
  * @returns `ANSI` string with mixed color around text
  */
+export function colorText<Hex extends HEXString>(str: string, hex: Hex): string
+export function colorText<RGB extends [number, number, number]>(
+	str: string,
+	rgb: RGB
+): string
+export function colorText<O extends ColorTextOptionParams>(
+	str: string,
+	options: O
+): string
 export function colorText<
-	T extends string,
-	C extends [number, number, number],
-	B extends [number, number, number]
->(str: T, options: PartialNonEmpty<{ text: C; background: B }>) {
+	O extends [number, number, number] | HEXString | ColorTextOptionParams
+>(str: string, options: O) {
 	let [tr, tg, tb, br, bg, bb] = [
 		undefined,
 		undefined,
@@ -167,19 +201,45 @@ export function colorText<
 		undefined,
 		undefined,
 	] as (number | undefined)[]
-	if ("text" in options)
-		(tr = options.text[0]), (tg = options.text[1]), (tb = options.text[2])
+	if (typeof options === "string") {
+		if (validHEXString(options)) {
+			const colors = HEXtoRGB(options)
+			if (colors.every(e => !Number.isNaN(e))) [tr, tg, tb] = colors
+		}
+	} else if (Array.isArray(options)) [tr, tg, tb] = options
+	else if (typeof options === "object") {
+		if ("text" in options) {
+			if (typeof options.text !== "string") [tr, tg, tb] = options.text
+			else if (validHEXString(options.text))
+				[tr, tg, tb] = HEXtoRGB(options.text)
+		}
+		if ("background" in options) {
+			if (typeof options.background !== "string")
+				[br, bg, bb] = options.background
+			else if (validHEXString(options.background))
+				[br, bg, bb] = HEXtoRGB(options.background)
+		}
+	}
 
-	if ("background" in options)
-		(br = options.background[0]),
-			(bg = options.background[1]),
-			(bb = options.background[2])
+	return tr !== undefined || br !== undefined
+		? `\u001b[${tr !== undefined ? `38;2;${tr || ""};${tg};${tb}` : ""}${
+				br !== undefined
+					? `${tr !== undefined ? ";" : ""}48;2;${br};${bg};${bb}`
+					: ""
+		  }m${str}\u001b[0m`
+		: str
+}
 
-	return `\u001b[${tr !== undefined ? `38;2;${tr || ""};${tg};${tb}` : ""}${
-		br !== undefined
-			? `${tr !== undefined ? ";" : ""}48;2;${br};${bg};${bb}`
-			: ""
-	}m${str}\u001b[0m`
+export function getRoomsCount() {
+	return Object.keys(db.rooms).length
+}
+
+export function getUsersCount() {
+	return Object.keys(db.users).length
+}
+
+export function getWebSocketClientsCount() {
+	return clients.size
 }
 
 /*
@@ -454,10 +514,15 @@ export function checkSameCards<C extends Card[]>(cards: C) {
 }
 
 export function getCardRole<C extends CardPoint>(points: C): IsRoleCard<C> {
-	if (points == 7 || points == 8) return "peak" as IsRoleCard<C>
-	else if (points == 9 || points == 10) return "spy" as IsRoleCard<C>
-	else if (points == 11 || points == 12) return "swap" as IsRoleCard<C>
-	return null as IsRoleCard<C>
+	return (
+		points == 7 || points == 8
+			? "peak"
+			: points == 9 || points == 10
+			? "spy"
+			: points == 11 || points == 12
+			? "swap"
+			: null
+	) as IsRoleCard<C>
 }
 
 export function createCard<P extends CardPoint>(points: P): Card<P> {

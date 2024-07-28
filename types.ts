@@ -20,9 +20,9 @@ type AppendToObject<T, U> = {
 		: never
 }[keyof U]
 
-export type PartialNonEmpty<T> = T extends object
-	? { [K in keyof T]: AppendToObject<{}, { [P in K]: T[K] }> }[keyof T]
-	: never
+export type PartialNonEmpty<T extends object> = {
+	[K in keyof T]: AppendToObject<{}, { [P in K]: T[K] }>
+}[keyof T]
 
 /*
 	Utility types
@@ -120,6 +120,11 @@ export type SettingsParams = {
 	userSettings: UserSettings
 	setUserSettings: React.Dispatch<SetStateAction<UserSettings>>
 }
+
+export type ColorTextOptionParams = PartialNonEmpty<{
+	text: [number, number, number] | HEXString
+	background: [number, number, number] | HEXString
+}>
 
 /*
 	Parameters & Return types
