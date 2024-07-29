@@ -276,6 +276,8 @@ type GameActionOut = GameAction // maybe will be different implementation for me
 
 type SimpleAction = "add_user_to_room" | "remove_user_from_room" | "rename_user"
 
+type ConfigAction = "confirm" | "reject"
+
 export type SimpleActionIn = SimpleAction
 
 export type SimpleActionOut = SimpleAction
@@ -304,13 +306,16 @@ export type SimpleActionsMessageIn<
 	? { action: "rename_user"; newName: string }
 	: never)
 
-export type WebSocketMessageIn = {
-	user: GameUser
-	room: number
-	type: "to_server"
-	cmd?: FullCMD
-} & (SimpleActionsMessageIn | GameActionMessageIn)
-
+export type WebSocketMessageIn<Config extends boolean = false> = {
+	type: Config extends true ? "config" : "to_server"
+	action: Config extends true ? ConfigAction : never
+} & Config extends false
+	? {
+			user: GameUser
+			room: number
+			cmd?: FullCMD
+	  } & (SimpleActionsMessageIn | GameActionMessageIn)
+	: never
 export type SimpleActionsMessageOut<
 	Action extends SimpleActionOut = SimpleActionOut
 > = Action extends "add_user_to_room"
