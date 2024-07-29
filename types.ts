@@ -141,17 +141,17 @@ export type BaseUser = {
 	last_seen: number
 }
 
-export type User = BaseUser & {
+export type User = {
 	type: "user"
-}
+} & BaseUser
 
-export type GameUser = BaseUser & {
+export type GameUser = {
 	type: "game_user"
 	roomId: number
 	cards: Card[]
 	points: number
 	turn: boolean
-}
+} & BaseUser
 
 export type AnyUser = User | GameUser
 
@@ -308,14 +308,21 @@ export type SimpleActionsMessageIn<
 
 export type WebSocketMessageIn<Config extends boolean = false> = {
 	type: Config extends true ? "config" : "to_server"
-	action: Config extends true ? ConfigAction : never
-} & Config extends false
+} & (Config extends false
 	? {
 			user: GameUser
 			room: number
 			cmd?: FullCMD
 	  } & (SimpleActionsMessageIn | GameActionMessageIn)
-	: never
+	: {
+			action: Config extends true ? ConfigAction : never
+	  })
+
+let a: WebSocketMessageIn<true> = {
+	type: "config",
+	action: "confirm",
+}
+
 export type SimpleActionsMessageOut<
 	Action extends SimpleActionOut = SimpleActionOut
 > = Action extends "add_user_to_room"
