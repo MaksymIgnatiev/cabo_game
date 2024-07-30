@@ -1,9 +1,9 @@
-import { WebSocket } from "ws"
+import { Client, Database } from "./types"
+
 import { counter } from "./functions"
-import { Database } from "./types"
 
 export const db: Database = { rooms: {}, users: [] },
-	clients: Set<WebSocket> = new Set(),
+	clients: Map<string, Client> = new Map(),
 	port = 8080,
 	userID = counter(),
 	roomID = counter()

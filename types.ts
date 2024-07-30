@@ -1,4 +1,5 @@
 import { SetStateAction } from "react"
+import { WebSocket } from "ws"
 
 type TheBestTypeNameButNotTheBestUsacaseBecauseThisTypeDescribesTheWorstTypeInTypescitpEverAndYouWillBePunishedForItIfYouWillUseIt =
 	any
@@ -62,6 +63,10 @@ export type RGBString = `rgb(${Red}, ${Green}, ${Blue})`
 
 export type HSLString = `hsl(${Hue}, ${Saturation}%, ${Lightness}%)`
 
+export interface GameWebSocket extends WebSocket {
+	key?: string
+}
+
 /*
 	Global
 ------------------------------------------------------------
@@ -122,8 +127,8 @@ export type SettingsParams = {
 }
 
 export type ColorTextOptionParams = PartialNonEmpty<{
-	text: [number, number, number] | HEXString
-	background: [number, number, number] | HEXString
+	text: [Red, Green, Blue] | HEXString
+	background: [Red, Green, Blue] | HEXString
 }>
 
 /*
@@ -254,6 +259,11 @@ export type Database = {
 	rooms: Record<string, Room>
 }
 
+export type Client = {
+	ws: GameWebSocket
+	lastSeen: number
+}
+
 /*
 	Config (database)
 ------------------------------------------------------------
@@ -276,7 +286,14 @@ type GameActionOut = GameAction // maybe will be different implementation for me
 
 type SimpleAction = "add_user_to_room" | "remove_user_from_room" | "rename_user"
 
-type ConfigAction = "confirm" | "reject"
+type ConfigAction = "confirm" | "reject" | "generate_key"
+
+export type ErrorMessageCode =
+	| "KEY_EXISTS"
+	| "MESSAGE_DOESNT_HAVE_KEY"
+	| "ROOM_NOT_FOUND"
+	| "USER_NOT_FOUND"
+	| "MESSAGE_DOESNT_HAVE_NEW_NAME"
 
 export type SimpleActionIn = SimpleAction
 
@@ -306,22 +323,25 @@ export type SimpleActionsMessageIn<
 	? { action: "rename_user"; newName: string }
 	: never)
 
+export type ConfigActionMessageIn<Action extends ConfigAction = ConfigAction> =
+	Action extends "confirm"
+		? { action: "confirm" }
+		: Action extends "reject"
+		? { action: "reject" }
+		: Action extends "generate_key"
+		? { action: "generate_key" }
+		: never
+
 export type WebSocketMessageIn<Config extends boolean = false> = {
 	type: Config extends true ? "config" : "to_server"
+	key?: string
 } & (Config extends false
 	? {
-			user: GameUser
+			user: number
 			room: number
 			cmd?: FullCMD
 	  } & (SimpleActionsMessageIn | GameActionMessageIn)
-	: {
-			action: Config extends true ? ConfigAction : never
-	  })
-
-let a: WebSocketMessageIn<true> = {
-	type: "config",
-	action: "confirm",
-}
+	: ConfigActionMessageIn)
 
 export type SimpleActionsMessageOut<
 	Action extends SimpleActionOut = SimpleActionOut
@@ -346,8 +366,28 @@ export type GameActionMessageOut<Action extends GameActionOut = GameActionOut> =
 		? { action: "change_cards"; cards: Card[] }
 		: never
 
-export type WebSocketMessageOut = {
-	user: GameUser
-	room: Room
-	type: "to_client"
-} & (GameActionMessageOut | SimpleActionsMessageOut)
+export type ConfigActionMessageOut<Action extends ConfigAction = ConfigAction> =
+	Action extends "confirm"
+		? { action: "confirm" }
+		: Action extends "reject"
+		? { action: "reject" }
+		: Action extends "generate_key"
+		? { action: "generate_key"; key: string }
+		: never
+
+export type ErrorMessage = {
+	type: "error"
+	message: string
+	code: ErrorMessageCode
+}
+
+export type WebSocketMessageOut<Config extends boolean = false> =
+	| ({
+			type: Config extends true ? "config" : "to_client"
+	  } & (Config extends false
+			? {
+					user: GameUser
+					room: Room
+			  } & (SimpleActionsMessageOut | GameActionMessageOut)
+			: ConfigActionMessageOut))
+	| ErrorMessage
