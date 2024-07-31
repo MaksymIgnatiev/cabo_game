@@ -33,10 +33,15 @@ $button-move-duration: 6s;
 }
 
 .start-page-button {
-	background: linear-gradient(45deg, #007800, #003e00);
+	background: linear-gradient(
+		45deg,
+		hsl(120, 100%, 24%),
+		hsl(120, 100%, 12%)
+	);
 	background-size: 300px 80px;
 	color: #0000;
-	box-shadow: 0 0 max(40px, 0.3rem) max(10px, 0.05rem) #001b013f;
+	box-shadow: 0 0 max(40px, 0.3rem) max(10px, 0.05rem)
+		hsla(122, 100%, 5%, 0.247);
 	font-size: max(16px, 0.1rem);
 	&::before {
 		transition: 150ms ease-in-out;
@@ -56,11 +61,11 @@ $button-move-duration: 6s;
 }
 
 .start-page-button:hover::before {
-	background-color: #008407;
+	background-color: hsl(120, 100%, 25%);
 }
 
 .start-page-button:active::before {
-	background-color: #002302;
+	background-color: hsl(120, 100%, 8%);
 }
 
 @media (min-width: 550px) {
