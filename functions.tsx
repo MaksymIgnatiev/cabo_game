@@ -1,14 +1,5 @@
 import "dotenv/config"
 
-import { clients, db } from "./database"
-import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
-import {
-	error_key_exists,
-	error_message_doesnt_have_key,
-	error_message_doesnt_have_new_name,
-	error_room_not_found,
-	error_user_not_found,
-} from "./src/app/data/websocketMessages"
 import {
 	AnyUser,
 	Blue,
@@ -39,6 +30,15 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
+import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
+import { clients, db } from "./database"
+import {
+	error_key_exists,
+	error_message_doesnt_have_key,
+	error_message_doesnt_have_new_name,
+	error_room_not_found,
+	error_user_not_found,
+} from "./src/app/data/websocketMessages"
 
 import { HEX_CHARS } from "./src/app/data/plain"
 
@@ -755,7 +755,7 @@ export function createCard<P extends CardPoint>(points: P): Card<P> {
 export function generateCard(): Card
 export function generateCard<I extends boolean>(initial: I): Card
 export function generateCard<I extends boolean>(initial = false as I): Card {
-	const points = random(1, 13) as CardPoint
+	const points = random(0, 13) as CardPoint
 	return {
 		points,
 		role: getCardRole(points),

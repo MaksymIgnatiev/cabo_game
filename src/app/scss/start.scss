@@ -1,4 +1,5 @@
 @import "variables.scss";
+@import "mixins.scss";
 
 $button-move-duration: 6s;
 
@@ -7,11 +8,8 @@ $button-move-duration: 6s;
 		text-align: center;
 	}
 	& > .buttons {
-		display: flex;
-		flex-direction: column;
+		@include display-flex(column, space-between);
 		gap: 10px;
-		justify-content: space-between;
-		align-items: center;
 	}
 }
 
@@ -52,10 +50,8 @@ $button-move-duration: 6s;
 		content: var(--content);
 		position: absolute;
 		inset: 0;
-		display: flex;
 		color: $main-light-green;
-		justify-content: center;
-		align-items: center;
+		@include display-flex;
 	}
 }
 

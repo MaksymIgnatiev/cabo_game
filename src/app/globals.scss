@@ -10,7 +10,7 @@ body {
 	position: relative;
 	background: radial-gradient(circle at 50% 50%, #034f00, #042300);
 	height: 100dvh;
-	@include display-flex-center;
+	@include display-flex;
 	overflow: hidden;
 }
 
@@ -70,16 +70,13 @@ button {
 	left: 0;
 	width: 100dvw;
 	height: 100dvh;
-	@include display-flex-center;
+	@include display-flex;
 }
 
 .layer-data-wrapper {
 	width: max(250px, 50%);
 	font-size: min(16px, 3rem);
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
+	@include display-flex(column, space-between);
 	height: max(250px, 70%);
 }
 

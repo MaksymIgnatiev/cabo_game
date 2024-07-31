@@ -36,8 +36,7 @@
 		text-align: center;
 	}
 	form {
-		@include display-flex-center;
-		flex-direction: column;
+		@include display-flex;
 		gap: max(40px, 2rem);
 	}
 }

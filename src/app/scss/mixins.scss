@@ -1,5 +1,10 @@
-@mixin display-flex-center {
+@mixin flex-center(
+	$flex-direction: column,
+	$justify-content: center,
+	$align-items: center
+) {
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	flex-direction: $flex-direction;
+	justify-content: $justify-content;
+	align-items: $align-items;
 }

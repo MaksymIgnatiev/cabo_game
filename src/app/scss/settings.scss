@@ -1,4 +1,5 @@
 @import "./variables.scss";
+@import "./mixins.scss";
 
 $ofset-x: 0.8rem;
 $ofset-y: 0.8rem;
@@ -58,9 +59,7 @@ $width: min(40px, 0.7rem);
 	transition: 500ms ease-in-out;
 	width: $width;
 	filter: invert(90%);
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	@include display-flex(row);
 	&::before {
 		content: "";
 		position: absolute;
