@@ -1,5 +1,14 @@
 import "dotenv/config"
 
+import { clients, db } from "./database"
+import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
+import {
+	error_key_exists,
+	error_message_doesnt_have_key,
+	error_message_doesnt_have_new_name,
+	error_room_not_found,
+	error_user_not_found,
+} from "./src/app/data/websocketMessages"
 import {
 	AnyUser,
 	Blue,
@@ -30,15 +39,6 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
-import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
-import { clients, db } from "./database"
-import {
-	error_key_exists,
-	error_message_doesnt_have_key,
-	error_message_doesnt_have_new_name,
-	error_room_not_found,
-	error_user_not_found,
-} from "./src/app/data/websocketMessages"
 
 import { HEX_CHARS } from "./src/app/data/plain"
 
@@ -79,7 +79,11 @@ export function getValueFromLocalStorage<K extends string>(key: K) {
 }
 
 export function validHexString(str: string): str is HEXString {
-	return str[0] === "#" && (str.length === 4 || str.length === 7)
+	return (
+		str[0] === "#" &&
+		(str.length === 4 || str.length === 7) &&
+		!isNaN(parseInt(str.slice(1), 16))
+	)
 }
 
 export function HexToHsl<S extends HEXString>(hex: S): HSLString
@@ -220,29 +224,36 @@ export function colorText<
 	O extends [Red, Green, Blue] | HEXString | ColorTextOptionParams
 >(str: string, options: O) {
 	let [tr, tg, tb, br, bg, bb] = [
-		undefined,
-		undefined,
-		undefined,
-		undefined,
-		undefined,
-		undefined,
-	] as (number | undefined)[]
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+		] as (number | undefined)[],
+		checker = (e: number) => (e > 255 ? 255 : e < 0 ? 0 : e)
 	if (typeof options === "string") {
 		if (validHexString(options)) {
 			const colors = HEXtoRGB(options, true)
 			if (colors.every(e => !Number.isNaN(e))) [tr, tg, tb] = colors
 		}
-	} else if (Array.isArray(options)) [tr, tg, tb] = options
-	else if (typeof options === "object") {
+	} else if (Array.isArray(options)) {
+		;[tr, tg, tb] = options.map(checker) as [Red, Green, Blue]
+	} else if (typeof options === "object") {
 		if ("text" in options)
-			if (typeof options.text !== "string") [tr, tg, tb] = options.text
+			if (typeof options.text !== "string")
+				[tr, tg, tb] = options.text.map(checker) as [Red, Green, Blue]
 			else if (validHexString(options.text))
 				[tr, tg, tb] = HEXtoRGB(options.text, true)
 
 		if ("background" in options)
-			if (typeof options.background !== "string")
-				[br, bg, bb] = options.background
-			else if (validHexString(options.background))
+			if (typeof options.background !== "string") {
+				;[br, bg, bb] = options.background.map(checker) as [
+					Red,
+					Green,
+					Blue
+				]
+			} else if (validHexString(options.background))
 				[br, bg, bb] = HEXtoRGB(options.background, true)
 	}
 
