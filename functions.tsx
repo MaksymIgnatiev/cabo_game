@@ -1,14 +1,5 @@
 import "dotenv/config"
 
-import { clients, db } from "./database"
-import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
-import {
-	error_key_exists,
-	error_message_doesnt_have_key,
-	error_message_doesnt_have_new_name,
-	error_room_not_found,
-	error_user_not_found,
-} from "./src/app/data/websocketMessages"
 import {
 	AnyUser,
 	Blue,
@@ -39,6 +30,15 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
+import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
+import { clients, db } from "./database"
+import {
+	error_key_exists,
+	error_message_doesnt_have_key,
+	error_message_doesnt_have_new_name,
+	error_room_not_found,
+	error_user_not_found,
+} from "./src/app/data/websocketMessages"
 
 import { HEX_CHARS } from "./src/app/data/plain"
 
@@ -82,12 +82,12 @@ export function validHexString(str: string): str is HEXString {
 	return (
 		str[0] === "#" &&
 		(str.length === 4 || str.length === 7) &&
-		!isNaN(parseInt(str.slice(1), 16))
+		!Number.isNaN(parseInt(str.slice(1), 16))
 	)
 }
 
 export function HexToHsl<S extends HEXString>(hex: S): HSLString
-export function HexToHsl<S extends HEXString, V extends boolean = true>(
+export function HexToHsl<S extends HEXString, V extends boolean = false>(
 	hex: S,
 	values: true
 ): [Hue, Saturation, Lightness]
@@ -145,7 +145,7 @@ export function HEXtoRGB<S extends HEXString, V extends boolean = false>(
 	hex: S,
 	values: false
 ): RGBString
-export function HEXtoRGB<S extends HEXString, V extends boolean = true>(
+export function HEXtoRGB<S extends HEXString, V extends boolean = false>(
 	hex: S,
 	values: true
 ): [Red, Green, Blue]
@@ -153,16 +153,22 @@ export function HEXtoRGB<S extends HEXString, V extends boolean = false>(
 	hex: S,
 	values = false as V
 ): V extends true ? [Red, Green, Blue] : RGBString {
-	const p = hex.length === 4 ? 1 : 2,
-		r = parseInt(hex.slice(1, 1 + p), 16),
-		g = parseInt(hex.slice(1 + p, 1 + p * 2), 16),
-		b = parseInt(hex.slice(1 + p * 2, 1 + p * 3), 16)
+	const p = hex.length === 4 ? 1 : 2
+	let rs = hex.slice(1, 1 + p),
+		gs = hex.slice(1 + p, 1 + p * 2),
+		bs = hex.slice(1 + p * 2, 1 + p * 3)
+
+	if (p === 1) [rs, gs, bs] = [rs + rs, gs + gs, bs + bs]
+
+	const r = parseInt(rs, 16) / 255,
+		g = parseInt(gs, 16) / 255,
+		b = parseInt(bs, 16) / 255
 	return (values ? [r, g, b] : `rgb(${r}, ${g}, ${b})`) as V extends true
 		? [Red, Green, Blue]
 		: RGBString
 }
 
-/** Shuffles the given array in-place
+/** Shuffles the given array in-place. Returning the link to the given array
  * @param array Array to be shuffled */
 export function shuffleArray<A extends any[]>(array: A) {
 	for (let i = array.length - 1; i > 0; i--) {
@@ -194,12 +200,13 @@ export function range<S extends number, E extends number, R extends number>(
 	end = 0 as E,
 	step = 1 as R
 ) {
+	if (start > 0 && end == 0) {
+		end = start as number as E
+		start = 0 as S
+	}
 	return Array.from(
-		{
-			length:
-				(end <= 0 ? start : end - start) / step + (end <= 0 ? 0 : 1),
-		},
-		(_, i) => (end <= 0 ? 0 : start) + i * step
+		{ length: Math.max(Math.ceil((end - start) / step), 0) },
+		(_, i) => start + i * step
 	)
 }
 
@@ -209,7 +216,7 @@ export function range<S extends number, E extends number, R extends number>(
  * @param options param that reepresents HEX color of text foreground /
  * tuple with 3 colors that represents RGB chanels /
  * object with fields `text` and/or `background`, each of which represents a tuple with 3 values for rgb chanels for foreground/background
- * @returns `ANSI` string with mixed color around text
+ * @returns `ANSI` string with mixed color around text, or the original string if somwthing goes wrong
  */
 export function colorText<Hex extends HEXString>(str: string, hex: Hex): string
 export function colorText<RGB extends [Red, Green, Blue]>(
