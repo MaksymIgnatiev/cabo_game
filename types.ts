@@ -25,6 +25,11 @@ export type PartialNonEmpty<T extends object> = {
 	[K in keyof T]: AppendToObject<{}, { [P in K]: T[K] }>
 }[keyof T]
 
+type Range<
+	N extends number,
+	Acc extends Array<number> = []
+> = Acc["length"] extends N ? Acc : Range<N, [...Acc, Acc["length"]]>
+
 /*
 	Utility types
 ------------------------------------------------------------
@@ -43,49 +48,28 @@ export type JSONValue =
 
 export type Language = "en" | "ru"
 
-type HexChar =
-	| "0"
-	| "1"
-	| "2"
-	| "3"
-	| "4"
-	| "5"
-	| "6"
-	| "7"
-	| "8"
-	| "9"
-	| "a"
-	| "b"
-	| "c"
-	| "d"
-	| "e"
-	| "f"
-	| "A"
-	| "B"
-	| "C"
-	| "D"
-	| "E"
-	| "F"
+type HexChar = Range<10>[number] | "a" | "b" | "c" | "d" | "e" | "f"
 
-type IsHexChar<T extends string> = Lowercase<T> extends HexChar ? T : never
-type CaseInsensitive<T extends string> = string extends T
-	? string
-	: T extends `${infer F}${infer R}`
+export type IsHexChar<T extends string> = T extends HexChar ? T : never
+
+// type HexColor<T extends string> =
+// 	T extends `#${HexChar}${HexChar}${HexChar}${infer Rest1}`
+// 		? Rest1 extends ``
+// 			? CaseInsensitive<T>
+// 			: Rest1 extends `${HexChar}${HexChar}${HexChar}`
+// 			? CaseInsensitive<T>
+// 			: never
+// 		: never
+
+type CaseInsensitive<T extends string> = T extends `${infer F}${infer R}`
 	? `${Uppercase<F> | Lowercase<F>}${CaseInsensitive<R>}`
-	: T
-type HexColor<T extends string> =
-	T extends `#${HexChar}${HexChar}${HexChar}${infer Rest1}`
-		? Rest1 extends ``
-			? T
-			: Rest1 extends `${HexChar}${HexChar}${HexChar}`
-			? T
-			: never
-		: never
+	: ""
 
-let a: HexColor<"#00F000"> = "#00F000"
-//  ^?
+type HexColorRec<T extends string, N extends number> = N extends 0
+	? T
+	: HexColorRec<`${T}${HexChar}`, [-1, 0, 1, 2, 3, 4, 5][N]>
 
-// type hexstring<S extends string> = HexColor<S>
+type HexColor3 = CaseInsensitive<HexColorRec<"#", 3>>
 
 export type HexColorLength = 3 | 6
 
