@@ -1,5 +1,6 @@
 @import "../variables.scss";
 
+@import "./mixin_inlines.scss";
 .open-button-position-container {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -7,8 +8,8 @@
 	width: max(100px, 3rem);
 	aspect-ratio: 1/1;
 	padding: max(10px, 0.4rem);
-	background: #020;
-	border: 2px solid #060;
+	background: hsl(120, 100%, 7%);
+	border: 2px solid hsl(120, 100%, 20%);
 	border-radius: 10px;
 	& > button {
 		padding: max(10px, 0.4rem);
@@ -16,7 +17,7 @@
 		border: 1px solid $main-light-green;
 		background-color: #0000;
 		width: 25px;
-		transition: 150ms ease-in-out;
+		@include transition(150ms ease-in-out);
 		&.right {
 			grid-column: 2;
 			justify-self: end;

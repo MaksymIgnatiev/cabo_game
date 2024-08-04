@@ -1,5 +1,6 @@
 @import "./variables.scss";
 @import "./mixins.scss";
+@import "./mixin_inlines.scss";
 
 $ofset-x: 0.8rem;
 $ofset-y: 0.8rem;
@@ -26,7 +27,7 @@ $width: min(40px, 0.7rem);
 
 .settings-wrapper {
 	top: 0;
-	transition: 600ms ease-in-out;
+	@include transition(600ms ease-in-out);
 	outline: 2px solid $main-soft-green;
 }
 
@@ -56,7 +57,7 @@ $width: min(40px, 0.7rem);
 	position: absolute;
 	background: url(/settings-cog-svgrepo-com.svg);
 	aspect-ratio: 1/1;
-	transition: 500ms ease-in-out;
+	@include transition(500ms ease-in-out);
 	width: $width;
 	filter: invert(90%);
 	@include display-flex(row);
@@ -66,7 +67,7 @@ $width: min(40px, 0.7rem);
 		inset: -5px;
 		background: #0000;
 		border-radius: 20px;
-		transition: 400ms ease-in-out;
+		@include transition(400ms ease-in-out);
 	}
 	&:hover {
 		rotate: 180deg;
@@ -79,7 +80,7 @@ $width: min(40px, 0.7rem);
 		background: url(/settings-cog-svgrepo-com.svg);
 		position: absolute;
 		aspect-ratio: 1/1;
-		transition: 400ms ease-in-out;
+		@include transition(400ms ease-in-out);
 		width: $width;
 		background-size: contain;
 	}

@@ -1,5 +1,6 @@
 @import "variables.scss";
 @import "mixins.scss";
+@import "mixin_inlines.scss";
 
 $button-move-duration: 6s;
 
@@ -14,13 +15,16 @@ $button-move-duration: 6s;
 }
 
 .join-game {
-	animation: move-start-buttons $button-move-duration linear infinite
-		alternate;
+	@include animation(
+		move-start-buttons $button-move-duration linear infinite alternate
+	);
 }
 
 .create-game {
-	animation: move-start-buttons $button-move-duration linear infinite
-		alternate-reverse;
+	@include animation(
+		move-start-buttons $button-move-duration linear infinite
+			alternate-reverse
+	);
 }
 
 @keyframes move-start-buttons {
@@ -40,16 +44,17 @@ $button-move-duration: 6s;
 	);
 	background-size: 300px 80px;
 	color: #0000;
-	box-shadow: 0 0 max(40px, 0.3rem) max(10px, 0.05rem)
-		hsla(122, 100%, 5%, 0.247);
+	@include box-shadow(
+		0 0 max(40px, 0.3rem) max(10px, 0.05rem) hsla(122, 100%, 5%, 0.247)
+	);
 	font-size: max(16px, 0.1rem);
 	&::before {
-		transition: 150ms ease-in-out;
+		@include transition(150ms ease-in-out);
 		content: "";
 		position: absolute;
 		inset: 0;
 		background-color: #0000;
-		border-radius: inherit;
+		@include border-radius(inherit);
 	}
 	&::after {
 		content: var(--content);
