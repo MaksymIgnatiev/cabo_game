@@ -5,31 +5,32 @@
 	position: relative;
 }
 
-.collect-data-input-error-text {
-	position: absolute;
-	font-size: max(13px, 0.1rem);
-	top: 100%;
-	color: #fe1616;
-	text-align: center;
-	width: 100%;
-	opacity: 0;
-	transform: translateY(-15px);
-	@include transition(opacity 0.6s ease-in, transform 0.6s ease-in);
-
-	&::before {
-		content: "";
+.collect-data-input-error {
+	&-text {
 		position: absolute;
-		top: 50%;
-		left: 0;
+		font-size: max(13px, 0.1rem);
+		top: 100%;
+		color: #fe1616;
+		text-align: center;
 		width: 100%;
-		box-shadow: 0 0 50px 20px #062e0033;
-		z-index: -1;
-	}
-}
+		opacity: 0;
+		transform: translateY(-15px);
+		@include transition(opacity 0.6s ease-in, transform 0.6s ease-in);
 
-.collect-data-input-error-active {
-	opacity: 1;
-	transform: translateY(8px);
+		&::before {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 0;
+			width: 100%;
+			box-shadow: 0 0 50px 20px hsla(112, 100%, 9%, 0.2);
+			z-index: -1;
+		}
+	}
+	&-active {
+		opacity: 1;
+		transform: translateY(8px);
+	}
 }
 
 .layer-data-wrapper {
@@ -45,4 +46,8 @@
 [aria-label="Get Nickname"],
 [aria-label="Get Room ID"] {
 	background: #040;
+}
+
+.se {
+	color: #f00;
 }

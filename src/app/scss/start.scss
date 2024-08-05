@@ -43,7 +43,7 @@ $button-move-duration: 6s;
 		hsl(120, 100%, 12%)
 	);
 	background-size: 300px 80px;
-	color: #0000;
+	color: hsla(0, 0%, 0%, 0);
 	@include box-shadow(
 		0 0 max(40px, 0.3rem) max(10px, 0.05rem) hsla(122, 100%, 5%, 0.247)
 	);
@@ -53,7 +53,7 @@ $button-move-duration: 6s;
 		content: "";
 		position: absolute;
 		inset: 0;
-		background-color: #0000;
+		background-color: hsla(0, 0%, 0%, 0);
 		@include border-radius(inherit);
 	}
 	&::after {
@@ -65,12 +65,14 @@ $button-move-duration: 6s;
 	}
 }
 
-.start-page-button:hover::before {
-	background-color: hsl(120, 100%, 25%);
-}
+.start-page-button {
+	&:hover::before {
+		background-color: hsl(120, 100%, 25%);
+	}
 
-.start-page-button:active::before {
-	background-color: hsl(120, 100%, 8%);
+	&:active::before {
+		background-color: hsl(120, 100%, 8%);
+	}
 }
 
 @media (min-width: 550px) {

@@ -66,7 +66,7 @@ $width: min(40px, 0.7rem);
 		position: absolute;
 		inset: -5px;
 		background: #0000;
-		border-radius: 20px;
+		@include border-radius(20px);
 		@include transition(400ms ease-in-out);
 	}
 	&:hover {

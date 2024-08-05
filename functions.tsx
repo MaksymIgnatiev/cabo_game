@@ -1,5 +1,14 @@
 import "dotenv/config"
 
+import { clients, db } from "./database"
+import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
+import {
+	error_key_exists,
+	error_message_doesnt_have_key,
+	error_message_doesnt_have_new_name,
+	error_room_not_found,
+	error_user_not_found,
+} from "./src/app/data/websocketMessages"
 import {
 	AnyUser,
 	Blue,
@@ -30,15 +39,6 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
-import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
-import { clients, db } from "./database"
-import {
-	error_key_exists,
-	error_message_doesnt_have_key,
-	error_message_doesnt_have_new_name,
-	error_room_not_found,
-	error_user_not_found,
-} from "./src/app/data/websocketMessages"
 
 import { HEX_CHARS } from "./src/app/data/plain"
 
@@ -278,7 +278,7 @@ export function getRoomsCount() {
 }
 
 export function getUsersCount() {
-	return Object.keys(db.users).length
+	return db.users.length
 }
 
 export function getWebSocketClientsCount() {
@@ -292,7 +292,7 @@ export function generateHexID(length = 16) {
 }
 
 export function getClientByHexID(id: string) {
-	return clients.entries().find(([key]) => key === id)?.[1]
+	return [...clients.entries()].find(([key]) => key === id)?.[1]
 }
 
 export function getWebSocketByHexID(id: string) {
@@ -396,9 +396,7 @@ export function getUsers<I extends number>(roomId?: I) {
 }
 
 export function getGameUsers(): GameUser[]
-export function getGameUsers<I extends number>(
-	roomId?: I
-): GameUser[] | undefined
+export function getGameUsers<I extends number>(roomId?: I): GameUser[]
 export function getGameUsers<I extends number>(roomId?: I) {
 	return (roomId ? db.rooms[roomId]?.users : db.users).filter(
 		user => user.type === "game_user"
@@ -421,7 +419,7 @@ export function createUser<
 	}
 }
 
-export function createGameUser<U extends User>(user: U) {
+export function createGameUser(user: User) {
 	return Object.assign(user, {
 		type: "game_user",
 		roomId: user.roomId ?? -1,
@@ -449,15 +447,20 @@ export function getUser<I extends number, R extends number>(
 }
 
 export function getGameUser<I extends number>(id: I): GameUser | undefined
+export function getGameUser<I extends number, R extends number>(
+	id: I,
+	roomId: R
+): GameUser | undefined
 export function getGameUser<I extends number, R extends number>(option: {
 	id: I
 	roomId?: R
 }): GameUser | undefined
 export function getGameUser<I extends number, R extends number>(
-	option: { id: I; roomId?: R } | I
+	option: { id: I; roomId?: R } | I,
+	roomId?: R
 ) {
 	return getGameUsers(
-		typeof option === "object" ? option.roomId : option
+		typeof option === "object" ? option.roomId ?? roomId : option
 	)?.find(
 		user => user.id === (typeof option === "object" ? option.id : option)
 	)

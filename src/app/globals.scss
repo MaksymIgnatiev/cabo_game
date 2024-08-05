@@ -51,7 +51,7 @@ button {
 
 .ui-button {
 	position: relative;
-	border-radius: 10px;
+	@include border-radius(10px);
 	font-size: max(10px, min(30px, 0.5rem));
 	padding: max(10px, 0.15rem) max(15px, 0.2rem);
 	@include transition(150ms ease-in-out);
@@ -91,7 +91,7 @@ button {
 	padding: max(10px, 0.07rem) max(10px, 0.1rem);
 	border: none;
 	font-size: max(15px, min(20px, 0.2rem));
-	border-radius: max(10px, 0.06rem);
+	@include border-radius(max(10px, 0.06rem));
 	width: max(150px, 1.2rem);
 	&:focus {
 		outline: none;
@@ -104,10 +104,10 @@ button {
 	background: #060;
 	color: $main-light-green;
 	&:hover {
-		background: #080;
+		background: hsl(120, 100%, 27%);
 	}
 	&:active {
-		background: #040;
+		background: hsl(120, 100%, 13%);
 	}
 }
 

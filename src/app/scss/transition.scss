@@ -1,3 +1,5 @@
+@import "mixin_inlines.scss";
+
 $transition-duration: 3s;
 
 .cabo-transition {
@@ -7,12 +9,14 @@ $transition-duration: 3s;
 	}
 	z-index: 1000000000000;
 }
+
 .cabo-transition-active {
-	animation: page-transition $transition-duration linear;
+	@include animation(page-transition $transition-duration linear);
 	& > * {
-		animation: page-transition-content $transition-duration linear;
+		@include animation(page-transition-content $transition-duration linear);
 	}
 }
+
 @keyframes page-transition {
 	0% {
 		display: flex;
@@ -27,6 +31,7 @@ $transition-duration: 3s;
 		opacity: 0;
 	}
 }
+
 @keyframes page-transition-content {
 	30% {
 		opacity: 0;
