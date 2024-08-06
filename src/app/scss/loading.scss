@@ -1,15 +1,58 @@
 @import "./mixins.scss";
+@import "./mixin_inlines.scss";
 
 $letter-delay: 0.3s;
 $letter-wait: 1.5s;
 $letter-cubic-bezier: cubic-bezier(0.31, -0.17, 0.66, 0.32);
 $letter-fade-in-duration: 0.35s;
 
+@mixin create-keyframes($name, $to-transform) {
+	@keyframes #{$name} {
+		to {
+			@each $property, $value in $to-transform {
+				#{$property}: #{$value};
+			}
+		}
+	}
+}
+
+@include create-keyframes(
+	fade-in,
+	(
+		opacity: 1,
+	)
+);
+@include create-keyframes(
+	move-c,
+	(
+		rotate: -270deg,
+		translate: -50dvw 0,
+	)
+);
+@include create-keyframes(
+	move-a,
+	(
+		translate: 0 -80dvh,
+	)
+);
+@include create-keyframes(
+	move-b,
+	(
+		translate: 0 80dvh,
+	)
+);
+@include create-keyframes(
+	move-o,
+	(
+		translate: 50dvw 0,
+	)
+);
+
 .loading-screen {
 	position: fixed;
 	inset: 0;
-	background-color: #023d00;
-	color: #daffd0;
+	background-color: hsl(120, 100%, 12%);
+	color: hsl(107, 100%, 91%);
 	font-family: "Lexend Deca";
 	font-weight: 600;
 	@include display-flex(row);
@@ -26,51 +69,26 @@ $letter-fade-in-duration: 0.35s;
 
 #C {
 	transform-origin: 50% 50%;
-	animation: fade-in $letter-fade-in-duration linear forwards,
-		move-c 1s $letter-cubic-bezier $letter-wait + $letter-delay forwards;
+	@include animation(
+		fade-in $letter-fade-in-duration linear forwards,
+		move-c 1s $letter-cubic-bezier $letter-wait + $letter-delay forwards
+	);
 }
 #A {
-	animation: fade-in $letter-fade-in-duration linear $letter-delay * 2
-			forwards,
-		move-a 1s $letter-cubic-bezier $letter-wait + $letter-delay * 3 forwards;
+	@include animation(
+		fade-in $letter-fade-in-duration linear $letter-delay * 2 forwards,
+		move-a 1s $letter-cubic-bezier $letter-wait + $letter-delay * 3 forwards
+	);
 }
 #B {
-	animation: fade-in $letter-fade-in-duration linear $letter-delay forwards,
-		move-b 1s $letter-cubic-bezier $letter-wait + $letter-delay * 2 forwards;
+	@include animation(
+		fade-in $letter-fade-in-duration linear $letter-delay forwards,
+		move-b 1s $letter-cubic-bezier $letter-wait + $letter-delay * 2 forwards
+	);
 }
 #O {
-	animation: fade-in $letter-fade-in-duration linear $letter-delay * 3
-			forwards,
-		move-o 1s $letter-cubic-bezier $letter-wait + $letter-delay * 4 forwards;
-}
-
-@keyframes fade-in {
-	100% {
-		opacity: 1;
-	}
-}
-
-@keyframes move-c {
-	to {
-		rotate: -270deg;
-		translate: -50dvw 0;
-	}
-}
-
-@keyframes move-a {
-	to {
-		translate: 0 -80dvh;
-	}
-}
-
-@keyframes move-b {
-	to {
-		translate: 0 80dvh;
-	}
-}
-
-@keyframes move-o {
-	to {
-		translate: 50dvw 0;
-	}
+	@include animation(
+		fade-in $letter-fade-in-duration linear $letter-delay * 3 forwards,
+		move-o 1s $letter-cubic-bezier $letter-wait + $letter-delay * 4 forwards
+	);
 }

@@ -14,7 +14,7 @@
 		text-align: center;
 		width: 100%;
 		opacity: 0;
-		transform: translateY(-15px);
+		@include transform(translateY(-15px));
 		@include transition(opacity 0.6s ease-in, transform 0.6s ease-in);
 
 		&::before {
@@ -23,13 +23,13 @@
 			top: 50%;
 			left: 0;
 			width: 100%;
-			box-shadow: 0 0 50px 20px hsla(112, 100%, 9%, 0.2);
+			@include box-shadow(0 0 50px 20px hsla(112, 100%, 9%, 0.2));
 			z-index: -1;
 		}
 	}
 	&-active {
 		opacity: 1;
-		transform: translateY(8px);
+		@include transform(translateY(8px));
 	}
 }
 

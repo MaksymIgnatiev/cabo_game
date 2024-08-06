@@ -1,6 +1,6 @@
 @import "../variables.scss";
+@import "../mixin_inlines.scss";
 
-@import "./mixin_inlines.scss";
 .open-button-position-container {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
