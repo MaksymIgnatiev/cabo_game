@@ -306,13 +306,21 @@ export type FullCMD<T extends CMD = CMD> = T extends "show"
 
 type GameUseCard = `use_card_${CardWord}`
 
-type GameAction = "use_card" | "pass" | "take_card" | "cabo" | "change_cards"
+export type GameAction =
+	| "use_card"
+	| "pass"
+	| "take_card"
+	| "cabo"
+	| "change_cards"
 
 type GameActionIn = GameAction // maybe will be different implementation for messages `in` and `out`
 
 type GameActionOut = GameAction // maybe will be different implementation for messages `in` and `out`
 
-type SimpleAction = "add_user_to_room" | "remove_user_from_room" | "rename_user"
+export type SimpleAction =
+	| "add_user_to_room"
+	| "remove_user_from_room"
+	| "rename_user"
 
 type ConfigAction = "confirm" | "reject" | "generate_key"
 

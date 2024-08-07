@@ -16,6 +16,7 @@ import {
 	CardPoint,
 	ColorTextOptionParams,
 	FullCMD,
+	GameAction,
 	GameUser,
 	GameWebSocket,
 	GetRoomsFunctionParams,
@@ -34,6 +35,7 @@ import {
 	Red,
 	Room,
 	Saturation,
+	SimpleAction,
 	User,
 	UserSettings,
 	WebSocketMessageIn,
@@ -560,15 +562,28 @@ export function parseWebsocketMessage<P extends "server" | "client">(
 	}
 }
 
-export function checkWebsocketMessage(
-	message: WebSocketMessageIn<boolean>,
-	dev = false
-) {
-	return dev
-		? message
-		: keysInWebsocketMessage.every(key => Object.hasOwn(message, key))
-		? message
-		: null
+export function checkWebsocketMessage<
+	A extends SimpleAction | GameAction | undefined = undefined
+>(message: WebSocketMessageIn<boolean>, action?: A, dev = false) {
+	let data: WebSocketMessageIn<boolean> | null = null
+	if (dev) data = message
+	else if (keysInWebsocketMessage.every(key => Object.hasOwn(message, key))) {
+		if (action === "add_user_to_room")
+			if (message.action === "add_user_to_room") data = message
+		if (action === "remove_user_from_room")
+			if (message.action === "remove_user_from_room") data = message
+		if (action === "rename_user")
+			if (
+				message.action === "rename_user" &&
+				typeof message.newName === "string"
+			)
+				data = message
+		if (action === "pass") if (message.action === "pass") data = message
+		if (action === "take_card")
+			if (message.action === "take_card") data = message
+	}
+
+	return data
 }
 
 export function sendMessageToAllClients<
@@ -617,7 +632,7 @@ export function processRawMessage(ws: GameWebSocket) {
 		const data = parseWebsocketMessage(messageIn, "server")
 		if (!data) return
 
-		const message = checkWebsocketMessage(data, true)
+		const message = checkWebsocketMessage(data, undefined, true)
 		if (!message) return
 
 		if (checkWebSocketMessageType(message, "config"))
