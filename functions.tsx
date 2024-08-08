@@ -564,7 +564,11 @@ export function parseWebsocketMessage<P extends "server" | "client">(
 
 export function checkWebsocketMessage<
 	A extends SimpleAction | GameAction | undefined = undefined
->(message: WebSocketMessageIn<boolean>, action?: A, dev = false) {
+>(
+	message: WebSocketMessageIn<boolean>,
+	action?: A,
+	dev = false
+): WebSocketMessageIn<boolean> | null {
 	let data: WebSocketMessageIn<boolean> | null = null
 	if (dev) data = message
 	else if (keysInWebsocketMessage.every(key => Object.hasOwn(message, key))) {
