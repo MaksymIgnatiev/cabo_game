@@ -1,14 +1,5 @@
 import "dotenv/config"
 
-import { clients, db } from "./database"
-import { CMD_SHOW, keysInWebsocketMessage } from "./src/app/data/tests"
-import {
-	error_key_exists,
-	error_message_doesnt_have_key,
-	error_message_doesnt_have_new_name,
-	error_room_not_found,
-	error_user_not_found,
-} from "./src/app/data/websocketMessages"
 import {
 	AnyUser,
 	Blue,
@@ -41,6 +32,20 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
+import {
+	CMD_SHOW,
+	cardRoles,
+	cardWords,
+	keysInWebsocketMessage,
+} from "./src/app/data/tests"
+import { clients, db } from "./database"
+import {
+	error_key_exists,
+	error_message_doesnt_have_key,
+	error_message_doesnt_have_new_name,
+	error_room_not_found,
+	error_user_not_found,
+} from "./src/app/data/websocketMessages"
 
 import { HEX_CHARS } from "./src/app/data/plain"
 
@@ -564,11 +569,7 @@ export function parseWebsocketMessage<P extends "server" | "client">(
 
 export function checkWebsocketMessage<
 	A extends SimpleAction | GameAction | undefined = undefined
->(
-	message: WebSocketMessageIn<boolean>,
-	action?: A,
-	dev = false
-): WebSocketMessageIn<boolean> | null {
+>(message: WebSocketMessageIn<boolean>, action?: A, dev = false) {
 	let data: WebSocketMessageIn<boolean> | null = null
 	if (dev) data = message
 	else if (keysInWebsocketMessage.every(key => Object.hasOwn(message, key))) {
@@ -579,12 +580,41 @@ export function checkWebsocketMessage<
 		if (action === "rename_user")
 			if (
 				message.action === "rename_user" &&
-				typeof message.newName === "string"
+				typeof message.newName === "string" &&
+				message.newName.trim() !== ""
 			)
 				data = message
 		if (action === "pass") if (message.action === "pass") data = message
 		if (action === "take_card")
 			if (message.action === "take_card") data = message
+		if (action === "cabo") if (message.action === "cabo") data = message
+		if (action === "use_card")
+			if (
+				message.action === "use_card" &&
+				typeof message.card === "object" &&
+				typeof message.card.new === "boolean" &&
+				typeof message.card.points === "number" &&
+				7 >= message.card.points &&
+				message.card.points <= 12 &&
+				cardWords.includes(message.card.role) &&
+				cardWords.includes(message.word)
+			)
+				data = message
+		if (action === "change_cards")
+			if (
+				message.action === "change_cards" &&
+				Array.isArray(message.cards) &&
+				message.cards.every(
+					card =>
+						typeof card === "object" &&
+						typeof card.new === "boolean" &&
+						cardRoles.includes(card.role) &&
+						typeof card.points === "number" &&
+						0 >= card.points &&
+						card.points <= 13
+				)
+			)
+				data = message
 	}
 
 	return data

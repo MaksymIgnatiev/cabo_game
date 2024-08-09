@@ -5,4 +5,6 @@ export const keysInWebsocketMessage = [
 		"type",
 	] as const,
 	CMD = ["show"] as const,
-	CMD_SHOW = ["db", "users", "rooms"] as const
+	CMD_SHOW = ["db", "users", "rooms"] as const,
+	cardWords = ["peak", "spy", "swap"] as const,
+	cardRoles = ["peak", "spy", "swap", null] as const
