@@ -1,5 +1,19 @@
 import "dotenv/config"
 
+import { clients, db } from "./database"
+import {
+	CMD_SHOW,
+	cardRoles,
+	cardWords,
+	keysInWebsocketMessage,
+} from "./src/app/data/tests"
+import {
+	error_key_exists,
+	error_message_doesnt_have_key,
+	error_message_doesnt_have_new_name,
+	error_room_not_found,
+	error_user_not_found,
+} from "./src/app/data/websocketMessages"
 import {
 	AnyUser,
 	Blue,
@@ -32,20 +46,6 @@ import {
 	WebSocketMessageIn,
 	WebSocketMessageOut,
 } from "./types"
-import {
-	CMD_SHOW,
-	cardRoles,
-	cardWords,
-	keysInWebsocketMessage,
-} from "./src/app/data/tests"
-import { clients, db } from "./database"
-import {
-	error_key_exists,
-	error_message_doesnt_have_key,
-	error_message_doesnt_have_new_name,
-	error_room_not_found,
-	error_user_not_found,
-} from "./src/app/data/websocketMessages"
 
 import { HEX_CHARS } from "./src/app/data/plain"
 
@@ -652,11 +652,11 @@ export function sendMessageToClient<T extends WebSocketMessageOut | JSONString>(
 */
 
 export function handleNewConnection(ws: GameWebSocket) {
-	console.log("New client connected")
+	console.log(colorText("New client connected", "#0a0"))
 	ws.on("message", processRawMessage(ws))
 
 	ws.on("close", () => {
-		console.log("Client disconnected")
+		console.log(colorText("Client disconnected", "#a00"))
 		if (ws.key) clients.delete(ws.key)
 	})
 }
