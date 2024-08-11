@@ -379,7 +379,7 @@ export type WebSocketMessageIn<Config extends boolean = false> = {
 	  } & (SimpleActionsMessageIn | GameActionMessageIn)
 	: ConfigActionMessageIn)
 
-export type SimpleActionsMessageOut<
+export type SimpleActionMessageOut<
 	Action extends SimpleActionOut = SimpleActionOut
 > = Action extends "add_user_to_room"
 	? { action: "add_user_to_room" }
@@ -424,6 +424,6 @@ export type WebSocketMessageOut<Config extends boolean = false> =
 			? {
 					user: GameUser
 					room: Room
-			  } & (SimpleActionsMessageOut | GameActionMessageOut)
+			  } & (SimpleActionMessageOut | GameActionMessageOut)
 			: ConfigActionMessageOut))
 	| ErrorMessage
