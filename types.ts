@@ -31,10 +31,10 @@ type Range<
 > = Acc["length"] extends N ? Acc : Range<N, [...Acc, Acc["length"]]>
 
 /*
-	Utility types
-------------------------------------------------------------
-	Global
-*/
+																							Utility types
+																							------------------------------------------------------------
+																								Global
+																								*/
 
 export type JSONString = string
 
@@ -53,13 +53,13 @@ type HexChar = Range<10>[number] | "a" | "b" | "c" | "d" | "e" | "f"
 export type IsHexChar<T extends string> = T extends HexChar ? T : never
 
 // type HexColor<T extends string> =
-// 	T extends `#${HexChar}${HexChar}${HexChar}${infer Rest1}`
-// 		? Rest1 extends ``
-// 			? CaseInsensitive<T>
-// 			: Rest1 extends `${HexChar}${HexChar}${HexChar}`
-// 			? CaseInsensitive<T>
-// 			: never
-// 		: never
+//	T extends `#${HexChar}${HexChar}${HexChar}${infer Rest1}`
+//		? Rest1 extends ``
+//			? CaseInsensitive<T>
+//			: Rest1 extends `${HexChar}${HexChar}${HexChar}`
+//			? CaseInsensitive<T>
+//			: never
+//		: never
 
 type CaseInsensitive<T extends string> = T extends `${infer F}${infer R}`
 	? `${Uppercase<F> | Lowercase<F>}${CaseInsensitive<R>}`
@@ -72,6 +72,8 @@ type HexColorRec<T extends string, N extends number> = N extends 0
 type HexColor3 = CaseInsensitive<HexColorRec<"#", 3>>
 
 export type HexColorLength = 3 | 6
+
+export type HEXClientKey = string
 
 export type Hue = number
 
@@ -96,10 +98,10 @@ export interface GameWebSocket extends WebSocket {
 }
 
 /*
-	Global
-------------------------------------------------------------
-	Parameters & Return types
-*/
+																																				Global
+																																				------------------------------------------------------------
+																																					Parameters & Return types
+																																					*/
 
 export type HomePageComponentParams = {
 	URLRoomId?: string
@@ -160,10 +162,10 @@ export type ColorTextOptionParams = PartialNonEmpty<{
 }>
 
 /*
-	Parameters & Return types
-------------------------------------------------------------
-	User
-*/
+																																																																							Parameters & Return types
+																																																																							------------------------------------------------------------
+																																																																								User
+																																																																								*/
 
 export type BaseUser = {
 	name: string
@@ -201,10 +203,10 @@ export type UserSettings = {
 }
 
 /*
-	User
-------------------------------------------------------------
-	Room
-*/
+																																																																																								User
+																																																																																								------------------------------------------------------------
+																																																																																									Room
+																																																																																									*/
 
 export type Room = {
 	id: number
@@ -215,10 +217,10 @@ export type Room = {
 }
 
 /*
-	Room
-------------------------------------------------------------
-	Card
-*/
+																																																																																															Room
+																																																																																															------------------------------------------------------------
+																																																																																																Card
+																																																																																																*/
 
 type CardWord = "peak" | "spy" | "swap"
 
@@ -271,16 +273,16 @@ type RegularCard =
 	| Card<13>
 
 /*
-	Card
-------------------------------------------------------------
-	Game
-*/
+																																																																																																																																Card
+																																																																																																																																------------------------------------------------------------
+																																																																																																																																	Game
+																																																																																																																																	*/
 
 /*
-	Game
-------------------------------------------------------------
-	Config (database)
-*/
+																																																																																																																																		Game
+																																																																																																																																		------------------------------------------------------------
+																																																																																																																																			Config (database)
+																																																																																																																																			*/
 
 export type Database = {
 	users: (User | GameUser)[]
@@ -290,13 +292,14 @@ export type Database = {
 export type Client = {
 	ws: GameWebSocket
 	lastSeen: number
+	key: HEXClientKey
 }
 
 /*
-	Config (database)
-------------------------------------------------------------
-	WebSocket
-*/
+																																																																																																																																									Config (database)
+																																																																																																																																									------------------------------------------------------------
+																																																																																																																																										WebSocket
+																																																																																																																																										*/
 
 export type CMD = "show"
 
@@ -339,34 +342,28 @@ export type GameActionMessageIn<Action extends GameActionIn = GameActionIn> = {
 	actionType: "game"
 } & (Action extends "use_card"
 	? { action: "use_card"; card: WordCard; word: CardWord }
-	: Action extends "pass"
-	? { action: "pass" }
 	: Action extends "take_card"
 	? { action: "take_card"; card: Card }
-	: Action extends "cabo"
-	? { action: "cabo" }
 	: Action extends "change_cards"
 	? { action: "change_cards"; cards: Card[] }
+	: Action extends "pass"
+	? { action: "pass" }
+	: Action extends "cabo"
+	? { action: "cabo" }
 	: never)
 
-export type SimpleActionsMessageIn<
+export type SimpleActionMessageIn<
 	Action extends SimpleActionIn = SimpleActionIn
-> = { actionType: "config" } & (Action extends "add_user_to_room"
+> = { actionType: "config" } & (Action extends "rename_user"
+	? { action: "rename_user"; newName: string }
+	: Action extends "add_user_to_room"
 	? { action: "add_user_to_room" }
 	: Action extends "remove_user_from_room"
 	? { action: "remove_user_from_room" }
-	: Action extends "rename_user"
-	? { action: "rename_user"; newName: string }
 	: never)
 
 export type ConfigActionMessageIn<Action extends ConfigAction = ConfigAction> =
-	Action extends "confirm"
-		? { action: "confirm" }
-		: Action extends "reject"
-		? { action: "reject" }
-		: Action extends "generate_key"
-		? { action: "generate_key" }
-		: never
+	{ action: Action }
 
 export type WebSocketMessageIn<Config extends boolean = false> = {
 	type: Config extends true ? "config" : "to_server"
@@ -376,40 +373,39 @@ export type WebSocketMessageIn<Config extends boolean = false> = {
 			user: number
 			room: number
 			cmd?: FullCMD
-	  } & (SimpleActionsMessageIn | GameActionMessageIn)
+	  } & (SimpleActionMessageIn | GameActionMessageIn)
 	: ConfigActionMessageIn)
+
+export type UseCardObject<T extends GameUseCard = GameUseCard> =
+	T extends "use_card_peak"
+		? { action: "use_card_peak"; card: PeakCard }
+		: T extends "use_card_spy"
+		? { action: "use_card_spy"; card: SpyCard }
+		: T extends "use_card_swap"
+		? { action: "use_card_swap"; card: SwapCard }
+		: never
 
 export type SimpleActionMessageOut<
 	Action extends SimpleActionOut = SimpleActionOut
-> = Action extends "add_user_to_room"
+> = Action extends "rename_user"
+	? { action: "rename_user"; newName: string }
+	: Action extends "add_user_to_room"
 	? { action: "add_user_to_room" }
 	: Action extends "remove_user_from_room"
 	? { action: "remove_user_from_room" }
-	: Action extends "rename_user"
-	? { action: "rename_user"; newName: string }
 	: never
 
 export type GameActionMessageOut<Action extends GameActionOut = GameActionOut> =
-	Action extends "use_card"
-		? { action: GameUseCard; card: WordCard }
-		: Action extends "pass"
-		? { action: "pass" }
+	{ action: Action } & Action extends "use_card"
+		? UseCardObject
 		: Action extends "take_card"
-		? { action: "take_card"; card: Card }
-		: Action extends "cabo"
-		? { action: "cabo" }
+		? { card: Card }
 		: Action extends "change_cards"
-		? { action: "change_cards"; cards: Card[] }
-		: never
+		? { cards: Card[] }
+		: {}
 
 export type ConfigActionMessageOut<Action extends ConfigAction = ConfigAction> =
-	Action extends "confirm"
-		? { action: "confirm" }
-		: Action extends "reject"
-		? { action: "reject" }
-		: Action extends "generate_key"
-		? { action: "generate_key"; key: string }
-		: never
+	{ action: Action } & Action extends "generate_key" ? { key: string } : {}
 
 export type ErrorMessage = {
 	type: "error"
