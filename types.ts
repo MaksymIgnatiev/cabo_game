@@ -31,10 +31,10 @@ type Range<
 > = Acc["length"] extends N ? Acc : Range<N, [...Acc, Acc["length"]]>
 
 /*
-																							Utility types
-																							------------------------------------------------------------
-																								Global
-																								*/
+Utility types
+------------------------------------------------------------
+Global
+*/
 
 export type JSONString = string
 
@@ -98,10 +98,10 @@ export interface GameWebSocket extends WebSocket {
 }
 
 /*
-																																				Global
-																																				------------------------------------------------------------
-																																					Parameters & Return types
-																																					*/
+	Global
+------------------------------------------------------------
+	Parameters & Return types
+*/
 
 export type HomePageComponentParams = {
 	URLRoomId?: string
@@ -162,10 +162,10 @@ export type ColorTextOptionParams = PartialNonEmpty<{
 }>
 
 /*
-																																																																							Parameters & Return types
-																																																																							------------------------------------------------------------
-																																																																								User
-																																																																								*/
+	Parameters & Return types
+------------------------------------------------------------
+	User
+*/
 
 export type BaseUser = {
 	name: string
@@ -203,10 +203,10 @@ export type UserSettings = {
 }
 
 /*
-																																																																																								User
-																																																																																								------------------------------------------------------------
-																																																																																									Room
-																																																																																									*/
+	User
+------------------------------------------------------------
+	Room
+*/
 
 export type Room = {
 	id: number
@@ -217,10 +217,10 @@ export type Room = {
 }
 
 /*
-																																																																																															Room
-																																																																																															------------------------------------------------------------
-																																																																																																Card
-																																																																																																*/
+	Room
+------------------------------------------------------------
+	Card
+*/
 
 type CardWord = "peak" | "spy" | "swap"
 
@@ -273,16 +273,16 @@ type RegularCard =
 	| Card<13>
 
 /*
-																																																																																																																																Card
-																																																																																																																																------------------------------------------------------------
-																																																																																																																																	Game
-																																																																																																																																	*/
+Card
+------------------------------------------------------------
+Game
+*/
 
 /*
-																																																																																																																																		Game
-																																																																																																																																		------------------------------------------------------------
-																																																																																																																																			Config (database)
-																																																																																																																																			*/
+Game
+------------------------------------------------------------
+Config (database)
+*/
 
 export type Database = {
 	users: (User | GameUser)[]
@@ -296,10 +296,10 @@ export type Client = {
 }
 
 /*
-																																																																																																																																									Config (database)
-																																																																																																																																									------------------------------------------------------------
-																																																																																																																																										WebSocket
-																																																																																																																																										*/
+Config (database)
+------------------------------------------------------------
+WebSocket
+*/
 
 export type CMD = "show"
 
