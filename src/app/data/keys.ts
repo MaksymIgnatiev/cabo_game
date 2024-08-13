@@ -1,0 +1,4 @@
+export const LOCAL_STORAGE_NICKNAME_KEY = "caboUserName",
+	LOCAL_STORAGE_ROOM_ID_KEY = "caboRoomId",
+	LOCAL_STORAGE_USER_ID_KEY = "caboUserId",
+	LOCAL_STORAGE_USER_SETTINGS_KEY = "caboUserSettingsJSON"

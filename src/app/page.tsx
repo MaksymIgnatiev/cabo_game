@@ -2,13 +2,8 @@
 
 import "./scss/main.scss"
 
-import { HomePageComponentParams, User } from "../../types"
-import {
-	LOCAL_STORAGE_NICKNAME_KEY,
-	LOCAL_STORAGE_ROOM_ID_KEY,
-	LOCAL_STORAGE_USER_ID_KEY,
-	LOCAL_STORAGE_USER_SETTINGS_KEY,
-} from "./data/keys"
+import { useEffect, useState } from "react"
+import { port, userID } from "../../database"
 import {
 	createDefaultUserSettings,
 	createUser,
@@ -17,18 +12,24 @@ import {
 	loadToGlobalView,
 	sendMessageToClient,
 } from "../../functions"
-import { useEffect, useState } from "react"
+import { HomePageComponentParams, User } from "../../types"
+import {
+	LOCAL_STORAGE_NICKNAME_KEY,
+	LOCAL_STORAGE_ROOM_ID_KEY,
+	LOCAL_STORAGE_USER_ID_KEY,
+	LOCAL_STORAGE_USER_SETTINGS_KEY,
+} from "./data/keys"
 
+import { WebSocket } from "ws"
 import CollectData from "./components/CollectData"
 import Loading from "./components/Loading"
 import MainGame from "./components/MainGame"
 import Settings from "./components/Settings"
 import Start from "./components/Start"
 import Transition from "./components/Transition"
-import { userID } from "../../database"
 
 export default function Home({ URLRoomId }: HomePageComponentParams) {
-	const [user, setUser] = useState<User>(createUser(" ", -1, { roomId: -1 })),
+	const [user, setUser] = useState<User>(createUser("", -1, { roomId: -1 })),
 		[userSettings, setUserSettings] = useState(
 			createDefaultUserSettings({
 				settButOnpPos: "top-right",
@@ -44,8 +45,9 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 				),
 				roomIDLocalStorage = getValueFromLocalStorage(
 					LOCAL_STORAGE_ROOM_ID_KEY
-				)
-			// ws = new WebSocket(`ws://localhost:${port}`)
+				),
+				ws = new WebSocket(`ws://localhost:${port}`)
+			// ws.on("message", )
 
 			setUser(o =>
 				Object.assign(o, {
@@ -69,11 +71,11 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 			setTimeout(() => setTransition(p => !p), 3000)
 		},
 		checkForData = () => {
-			if (user.name === " ") setUser(o => ({ ...o, name: "" }))
+			if (user.name === "") setUser(o => ({ ...o, name: "" }))
 			if (user.roomId === -1) setUser(o => ({ ...o, roomId: 0 }))
 		},
 		checkValidUser = () =>
-			user.name !== " " && user.roomId !== -1 && user.id !== -1
+			user.name !== "" && user.roomId !== -1 && user.id !== -1
 
 	useEffect(onWindowLoad, [])
 

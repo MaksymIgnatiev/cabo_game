@@ -405,7 +405,13 @@ export type GameActionMessageOut<Action extends GameActionOut = GameActionOut> =
 		: {}
 
 export type ConfigActionMessageOut<Action extends ConfigAction = ConfigAction> =
-	{ action: Action } & Action extends "generate_key" ? { key: string } : {}
+	Action extends "generate_key"
+		? { action: "generate_key"; key: string }
+		: Action extends "confirm"
+		? { action: "confirm" }
+		: Action extends "reject"
+		? { action: "reject" }
+		: never
 
 export type ErrorMessage = {
 	type: "error"
@@ -416,6 +422,7 @@ export type ErrorMessage = {
 export type WebSocketMessageOut<Config extends boolean = false> =
 	| ({
 			type: Config extends true ? "config" : "to_client"
+			debug?: boolean
 	  } & (Config extends false
 			? {
 					user: GameUser

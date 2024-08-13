@@ -107,20 +107,19 @@ export function HexToHsl<S extends HEXString, V extends boolean>(
 	hex: S,
 	values = false as V
 ): V extends true ? [Hue, Saturation, Lightness] : HSLString {
-	const p = hex.length === 4 ? 1 : 2
-	let rs = hex.slice(1, 1 + p),
+	var p = hex.length === 4 ? 1 : 2,
+		rs = hex.slice(1, 1 + p),
 		gs = hex.slice(1 + p, 1 + p * 2),
 		bs = hex.slice(1 + p * 2, 1 + p * 3)
 
 	if (p === 1) [rs, gs, bs] = [rs + rs, gs + gs, bs + bs]
 
-	const r = parseInt(rs, 16) / 255,
+	var r = parseInt(rs, 16) / 255,
 		g = parseInt(gs, 16) / 255,
 		b = parseInt(bs, 16) / 255,
 		max = Math.max(r, g, b),
-		min = Math.min(r, g, b)
-
-	let h = 0,
+		min = Math.min(r, g, b),
+		h = 0,
 		s = 0,
 		l = (max + min) / 2
 
@@ -160,16 +159,17 @@ export function HEXtoRGB<S extends HEXString, V extends boolean = false>(
 	hex: S,
 	values = false as V
 ): V extends true ? [Red, Green, Blue] : RGBString {
-	const p = hex.length === 4 ? 1 : 2
-	let rs = hex.slice(1, 1 + p),
+	var p = hex.length === 4 ? 1 : 2,
+		rs = hex.slice(1, 1 + p),
 		gs = hex.slice(1 + p, 1 + p * 2),
 		bs = hex.slice(1 + p * 2, 1 + p * 3)
 
 	if (p === 1) [rs, gs, bs] = [rs + rs, gs + gs, bs + bs]
 
-	const r = parseInt(rs, 16) / 255,
+	var r = parseInt(rs, 16) / 255,
 		g = parseInt(gs, 16) / 255,
 		b = parseInt(bs, 16) / 255
+
 	return (values ? [r, g, b] : `rgb(${r}, ${g}, ${b})`) as V extends true
 		? [Red, Green, Blue]
 		: RGBString
@@ -178,8 +178,8 @@ export function HEXtoRGB<S extends HEXString, V extends boolean = false>(
 /** Shuffles the given array in-place. Returning the link to the given array
  * @param array Array to be shuffled */
 export function shuffleArray<A extends any[]>(array: A) {
-	for (let i = array.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1))
+	for (var i = array.length - 1; i > 0; i--) {
+		var j = Math.floor(Math.random() * (i + 1))
 		;[array[i], array[j]] = [array[j], array[i]]
 	}
 	return array
@@ -237,7 +237,7 @@ export function colorText<O extends ColorTextOptionParams>(
 export function colorText<
 	O extends [Red, Green, Blue] | HEXString | ColorTextOptionParams
 >(str: string, options: O) {
-	let [tr, tg, tb, br, bg, bb] = [
+	var [tr, tg, tb, br, bg, bb] = [
 			undefined,
 			undefined,
 			undefined,
@@ -248,7 +248,7 @@ export function colorText<
 		checker = (e: number) => (e > 255 ? 255 : e < 0 ? 0 : e)
 	if (typeof options === "string") {
 		if (validHexString(options)) {
-			const colors = HEXtoRGB(options, true)
+			var colors = HEXtoRGB(options, true)
 			if (colors.every(e => !Number.isNaN(e))) [tr, tg, tb] = colors
 		}
 	} else if (Array.isArray(options)) {
@@ -310,8 +310,34 @@ export function updateObject(
 	original: Record<string, any>,
 	update: Record<string, any>
 ) {
-	for (let key in update)
+	for (var key in update)
 		if (update.hasOwnProperty(key)) original[key] = update[key]
+}
+
+function processThenableObject(thenable: { then: (...args: any[]) => any }) {
+	return function handleResult(callback: (...args: any[]) => any): any {
+		return processInput(
+			thenable.then((result: any) =>
+				result?.name === "handleResult"
+					? result(callback)
+					: callback(result)
+			)
+		)
+	}
+}
+
+function processFunction(input: unknown) {
+	return function handleResult(callback: Function) {
+		return processInput(callback(input))
+	}
+}
+
+function processInput(input: any) {
+	return input?.name === "handleResult"
+		? input
+		: input?.then && typeof input.then === "function"
+		? processThenableObject(input)
+		: processFunction(input)
 }
 
 /*
@@ -354,7 +380,7 @@ export function getRooms<
 >(
 	options?: PartialNonEmpty<GetRoomsFunctionParams<E, R, I>> | W
 ): GetRoomsReturnType<E, R, I> {
-	const allOptions = Object.assign(
+	var allOptions = Object.assign(
 			{
 				entries: false,
 				ids: false,
@@ -474,11 +500,11 @@ export function getGameUser<I extends number, R extends number>(
 }
 
 export function deleteUser<I extends number>(options: { id: I } | I) {
-	const id = (typeof options === "object" ? options.id : options) as number,
+	var id = (typeof options === "object" ? options.id : options) as number,
 		user = getUser(id)
 
 	if (!user?.roomId) return
-	const userIndexInRoom = getUsers(user.roomId)?.findIndex(
+	var userIndexInRoom = getUsers(user.roomId)?.findIndex(
 		user => user.id === id
 	)
 	if (userIndexInRoom === undefined) return
@@ -492,9 +518,9 @@ export function deleteUserfromRoom<UI extends number, RI extends number>(
 	roomId: RI
 ) {
 	if (roomId > 0) return false
-	const room = getRoom(roomId)
+	var room = getRoom(roomId)
 	if (!room) return false
-	const idx = room.users.findIndex(user => user.id === userId)
+	var idx = room.users.findIndex(user => user.id === userId)
 	if (idx === -1) return false
 	room.users.splice(idx, 1)
 	return true
@@ -514,12 +540,12 @@ export function createDefaultUserSettings(
 }
 
 export function updateUser(id: number, newData: User) {
-	const user = getUser(id)
+	var user = getUser(id)
 	return user ? (updateObject(user, newData), true) : false
 }
 
 export function updateGameUser(id: number, newData: GameUser) {
-	const user = getUser(id)
+	var user = getUser(id)
 	return user ? (updateObject(user, newData), true) : false
 }
 
@@ -538,7 +564,7 @@ export function id(generator: Generator<number, any, never>): number {
 }
 
 export function* cardSequence<P extends number>(prevPoint: P) {
-	const cards = shuffleArray(range(1, 13))
+	var cards = shuffleArray(range(1, 13))
 	while (cards[0] === prevPoint) shuffleArray(cards)
 	yield* cards
 }
@@ -559,7 +585,7 @@ export function parseWebsocketMessage<P extends "server" | "client">(
 	| null {
 	try {
 		if (typeof message !== "string") return null
-		const data = JSON.parse(message)
+		var data = JSON.parse(message)
 		if (typeof data !== "object") return null
 		return data
 	} catch (e) {
@@ -570,7 +596,7 @@ export function parseWebsocketMessage<P extends "server" | "client">(
 export function checkWebsocketMessage<
 	A extends SimpleAction | GameAction | undefined = undefined
 >(message: WebSocketMessageIn<boolean>, action?: A, dev = false) {
-	let data: WebSocketMessageIn<boolean> | null = null
+	var data: WebSocketMessageIn<boolean> | null = null
 	if (dev) data = message
 	else if (keysInWebsocketMessage.every(key => Object.hasOwn(message, key))) {
 		if (action === "add_user_to_room")
@@ -634,9 +660,9 @@ export function sendMessageToAllClients<
 	)
 }
 
-export function sendMessageToClient<T extends WebSocketMessageOut | JSONString>(
+export function sendMessageToClient(
 	client: GameWebSocket,
-	message: T
+	message: WebSocketMessageOut<boolean> | JSONString
 ) {
 	client.readyState === WebSocket.OPEN
 		? client.send(
@@ -663,10 +689,10 @@ export function handleNewConnection(ws: GameWebSocket) {
 
 export function processRawMessage(ws: GameWebSocket) {
 	return (messageIn: JSONString) => {
-		const data = parseWebsocketMessage(messageIn, "server")
+		var data = parseWebsocketMessage(messageIn, "server")
 		if (!data) return
 
-		const message = checkWebsocketMessage(data, undefined, true)
+		var message = checkWebsocketMessage(data, undefined, true)
 		if (!message) return
 
 		if (checkWebSocketMessageType(message, "config"))
@@ -674,7 +700,7 @@ export function processRawMessage(ws: GameWebSocket) {
 			processConfigMessage(ws, message)
 		else if (checkWebSocketMessageType(message, "to_server")) {
 			// regular message to server
-			const { room, user, action, cmd, actionType, key } = message
+			var { room, user, action, cmd, actionType, key } = message
 
 			if (key === undefined)
 				return sendMessageToClient(ws, error_message_doesnt_have_key)
@@ -707,15 +733,13 @@ export function processRawMessage(ws: GameWebSocket) {
 export function processCMD<C extends FullCMD>(cmd: C) {
 	if (!cmd.trim()) return false
 
-	const parts = cmd.split(" "),
+	var parts = cmd.split(" "),
 		command = parts.shift()
 
-	let done = false
+	var done = false
 	switch (command) {
 		case "show": {
-			const option = parts.shift() as
-				| (typeof CMD_SHOW)[number]
-				| undefined
+			var option = parts.shift() as (typeof CMD_SHOW)[number] | undefined
 
 			if (option) {
 				if (option === "db") console.log(db)
@@ -737,7 +761,18 @@ export function processConfigMessage(
 	} else if (message.action === "reject") {
 	} else if (message.action === "generate_key") {
 		if (ws.key === undefined) {
-			ws.key = generateHexID()
+			var key = generateHexID()
+			ws.key = key
+			clients.set(key, {
+				ws,
+				key,
+				lastSeen: Date.now(),
+			})
+			sendMessageToClient(ws, {
+				type: "to_client",
+				action: "generate_key",
+				key,
+			})
 		} else {
 			sendMessageToClient(ws, error_key_exists)
 		}
@@ -756,7 +791,7 @@ export function checkWebSocketMessageType<
 }
 
 export function processRenameUser(message: WebSocketMessageIn) {
-	const { room, user } = message,
+	var { room, user } = message,
 		roomFound = getRoom(room),
 		ws = getWebSocketByHexID(message.key!)
 	if (!roomFound)
@@ -768,16 +803,16 @@ export function processRenameUser(message: WebSocketMessageIn) {
 			: void 0
 	}
 
-	const userFound = roomFound.users.find(u => u.id === user)
+	var userFound = roomFound.users.find(u => u.id === user)
 
 	if (!userFound)
 		return ws ? sendMessageToClient(ws, error_user_not_found) : void 0
 
 	userFound.name = message.newName
-	const messageOut: WebSocketMessageOut = {
+	var messageOut: WebSocketMessageOut = {
 		type: "to_client",
 		action: "rename_user",
-		room: roomFound!,
+		room: roomFound,
 		newName: message.newName,
 		user: userFound,
 	}
@@ -787,6 +822,27 @@ export function processRenameUser(message: WebSocketMessageIn) {
 
 /*
 	WebSocket Server
+------------------------------------------------------------
+	Client
+*/
+
+export function handleRawClientMessage(messageIn: JSONString) {
+	var data = parseWebsocketMessage(messageIn, "client")
+	if (!data) return
+
+	processClientMessage(data)
+}
+
+export function processClientMessage(message: WebSocketMessageOut<boolean>) {
+	if (message.type === "config") {
+	} else if (message.type === "error") {
+	} else if (message.type === "to_client") {
+		// var {action} = message
+	}
+}
+
+/*
+	Client
 ------------------------------------------------------------
 	Game
 */
@@ -825,7 +881,7 @@ export function createCard<P extends CardPoint>(points: P): Card<P> {
 export function generateCard(): Card
 export function generateCard<I extends boolean>(initial: I): Card
 export function generateCard<I extends boolean>(initial = false as I): Card {
-	const points = random(0, 13) as CardPoint
+	var points = random(0, 13) as CardPoint
 	return {
 		points,
 		role: getCardRole(points),
