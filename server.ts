@@ -4,7 +4,7 @@ import { WebSocketServer } from "ws"
 import { port } from "./database"
 
 // Creating new WebSocket Server on port: `port`
-const wss = new WebSocketServer({ port })
+var wss = new WebSocketServer({ port })
 
 // Adding a listener to the server to handle all messages
 wss.on("connection", handleNewConnection)

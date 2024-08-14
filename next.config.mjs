@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+var nextConfig = {
 	webpack: config => {
 		config.module.rules.push({
 			test: /server\.ts$/,

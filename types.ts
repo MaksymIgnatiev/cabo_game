@@ -1,4 +1,5 @@
-import { SetStateAction } from "react"
+import { Dispatch, SetStateAction } from "react"
+
 import { WebSocket } from "ws"
 
 type TheBestTypeNameButNotTheBestUsacaseBecauseThisTypeDescribesTheWorstTypeInTypescitpEverAndYouWillBePunishedForItIfYouWillUseIt =
@@ -170,7 +171,7 @@ export type ColorTextOptionParams = PartialNonEmpty<{
 export type BaseUser = {
 	name: string
 	id: number
-	roomId: number | undefined
+	roomId: number
 	is_admin: boolean
 	lang: Language
 	last_seen: number
@@ -200,6 +201,16 @@ export type UserSettings = {
 	lang: Language
 	settButOnpPos: SettingsButtonPosition
 	settButClsPos: SettingsButtonPosition
+}
+
+export type UserObject = {
+	user: User
+	gameUser: GameUser
+	userSettings: UserSettings
+	setUser: Dispatch<SetStateAction<User>>
+	setUserSettings: Dispatch<SetStateAction<UserSettings>>
+	setGameUser: Dispatch<SetStateAction<GameUser>>
+	ws: GameWebSocket
 }
 
 /*
@@ -316,9 +327,9 @@ export type GameAction =
 	| "cabo"
 	| "change_cards"
 
-type GameActionIn = GameAction // maybe will be different implementation for messages `in` and `out`
+type GameActionServer = GameAction // maybe will be different implementation for messages `in` and `out`
 
-type GameActionOut = GameAction // maybe will be different implementation for messages `in` and `out`
+type GameActionClient = GameAction // maybe will be different implementation for messages `in` and `out`
 
 export type SimpleAction =
 	| "add_user_to_room"
@@ -334,11 +345,13 @@ export type ErrorMessageCode =
 	| "USER_NOT_FOUND"
 	| "MESSAGE_DOESNT_HAVE_NEW_NAME"
 
-export type SimpleActionIn = SimpleAction
+export type SimpleActionServer = SimpleAction
 
-export type SimpleActionOut = SimpleAction
+export type SimpleActionClient = SimpleAction
 
-export type GameActionMessageIn<Action extends GameActionIn = GameActionIn> = {
+export type GameActionMessageServer<
+	Action extends GameActionServer = GameActionServer
+> = {
 	actionType: "game"
 } & (Action extends "use_card"
 	? { action: "use_card"; card: WordCard; word: CardWord }
@@ -352,8 +365,8 @@ export type GameActionMessageIn<Action extends GameActionIn = GameActionIn> = {
 	? { action: "cabo" }
 	: never)
 
-export type SimpleActionMessageIn<
-	Action extends SimpleActionIn = SimpleActionIn
+export type SimpleActionMessageServer<
+	Action extends SimpleActionServer = SimpleActionServer
 > = { actionType: "config" } & (Action extends "rename_user"
 	? { action: "rename_user"; newName: string }
 	: Action extends "add_user_to_room"
@@ -362,10 +375,11 @@ export type SimpleActionMessageIn<
 	? { action: "remove_user_from_room" }
 	: never)
 
-export type ConfigActionMessageIn<Action extends ConfigAction = ConfigAction> =
-	{ action: Action }
+export type ConfigActionMessageServer<
+	Action extends ConfigAction = ConfigAction
+> = { action: Action }
 
-export type WebSocketMessageIn<Config extends boolean = false> = {
+export type WebSocketMessageServer<Config extends boolean = false> = {
 	type: Config extends true ? "config" : "to_server"
 	key?: string
 } & (Config extends false
@@ -373,8 +387,8 @@ export type WebSocketMessageIn<Config extends boolean = false> = {
 			user: number
 			room: number
 			cmd?: FullCMD
-	  } & (SimpleActionMessageIn | GameActionMessageIn)
-	: ConfigActionMessageIn)
+	  } & (SimpleActionMessageServer | GameActionMessageServer)
+	: ConfigActionMessageServer)
 
 export type UseCardObject<T extends GameUseCard = GameUseCard> =
 	T extends "use_card_peak"
@@ -385,8 +399,8 @@ export type UseCardObject<T extends GameUseCard = GameUseCard> =
 		? { action: "use_card_swap"; card: SwapCard }
 		: never
 
-export type SimpleActionMessageOut<
-	Action extends SimpleActionOut = SimpleActionOut
+export type SimpleActionMessageClient<
+	Action extends SimpleActionClient = SimpleActionClient
 > = Action extends "rename_user"
 	? { action: "rename_user"; newName: string }
 	: Action extends "add_user_to_room"
@@ -395,23 +409,29 @@ export type SimpleActionMessageOut<
 	? { action: "remove_user_from_room" }
 	: never
 
-export type GameActionMessageOut<Action extends GameActionOut = GameActionOut> =
-	{ action: Action } & Action extends "use_card"
-		? UseCardObject
-		: Action extends "take_card"
-		? { card: Card }
-		: Action extends "change_cards"
-		? { cards: Card[] }
-		: {}
+export type GameActionMessageClient<
+	Action extends GameActionClient = GameActionClient
+> = Action extends "use_card"
+	? UseCardObject
+	: Action extends "take_card"
+	? { action: "take_card"; card: Card }
+	: Action extends "change_cards"
+	? { action: "change_cards"; cards: Card[] }
+	: Action extends "pass"
+	? { action: "pass" }
+	: Action extends "cabo"
+	? { action: "cabo" }
+	: never
 
-export type ConfigActionMessageOut<Action extends ConfigAction = ConfigAction> =
-	Action extends "generate_key"
-		? { action: "generate_key"; key: string }
-		: Action extends "confirm"
-		? { action: "confirm" }
-		: Action extends "reject"
-		? { action: "reject" }
-		: never
+export type ConfigActionMessageClient<
+	Action extends ConfigAction = ConfigAction
+> = Action extends "generate_key"
+	? { action: "generate_key"; key: string }
+	: Action extends "confirm"
+	? { action: "confirm" }
+	: Action extends "reject"
+	? { action: "reject" }
+	: never
 
 export type ErrorMessage = {
 	type: "error"
@@ -419,7 +439,7 @@ export type ErrorMessage = {
 	code: ErrorMessageCode
 }
 
-export type WebSocketMessageOut<Config extends boolean = false> =
+export type WebSocketMessageClient<Config extends boolean = false> =
 	| ({
 			type: Config extends true ? "config" : "to_client"
 			debug?: boolean
@@ -427,6 +447,6 @@ export type WebSocketMessageOut<Config extends boolean = false> =
 			? {
 					user: GameUser
 					room: Room
-			  } & (SimpleActionMessageOut | GameActionMessageOut)
-			: ConfigActionMessageOut))
+			  } & (SimpleActionMessageClient | GameActionMessageClient)
+			: ConfigActionMessageClient))
 	| ErrorMessage

@@ -4,12 +4,12 @@ import {
 	LOCAL_STORAGE_USER_ID_KEY,
 } from "../data/keys"
 
+import { CollectDataParams } from "../../../types"
+import Constructor from "./CollectData/constructor"
+import { id } from "../../../functions"
+import { invisibleCarsRegex } from "../data/regexes"
 import { useState } from "react"
 import { userID } from "../../../database"
-import { id } from "../../../functions"
-import { CollectDataParams } from "../../../types"
-import { invisibleCarsRegex } from "../data/regexes"
-import Constructor from "./CollectData/constructor"
 
 export default function CollectData({
 	hasNickname,
@@ -17,11 +17,11 @@ export default function CollectData({
 	toggleTransition,
 	setUser,
 }: CollectDataParams) {
-	const [errorNickname, setErrorNickname] = useState(""),
+	var [errorNickname, setErrorNickname] = useState(""),
 		[errorGameId, setErrorGameId] = useState(""),
 		validNickname = (nick: string) => {
 			console.log({ nick })
-			const notValid = invisibleCarsRegex.test(nick)
+			var notValid = invisibleCarsRegex.test(nick)
 			if (notValid) {
 				setErrorNickname("Nickname cannot contain invisible cars")
 				return false
@@ -32,7 +32,7 @@ export default function CollectData({
 			return true
 		},
 		validGameId = (gameId: string) => {
-			const valid = /^([\d]+)$/.test(gameId)
+			var valid = /^([\d]+)$/.test(gameId)
 			if (!valid) {
 				setErrorGameId(
 					"Game ID contains invalid characters. Allowed characters: 0-9 (numbers only)"
@@ -44,7 +44,7 @@ export default function CollectData({
 		checkNickname = (nick: string) => {
 			if (validNickname(nick)) {
 				toggleTransition()
-				const userId = id(userID)
+				var userId = id(userID)
 				localStorage.setItem(LOCAL_STORAGE_NICKNAME_KEY, nick)
 				localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, userId + "")
 				setUser(o => ({

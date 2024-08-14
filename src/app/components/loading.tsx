@@ -2,23 +2,35 @@
 
 import "../scss/loading.scss"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function Loading() {
+	var [delayFade, setDelayFade] = useState(true),
+		[delayDelete, setDelayDelete] = useState(true),
+		delay = 3_600
+
 	useEffect(() => {
-		setTimeout(() => {
-			const el = document.querySelector(".loading-screen")
-			el?.classList.add("fade-out-300ms")
-			setTimeout(() => el?.remove(), 500)
-		}, 3_600)
+		var timer1 = setTimeout(() => setDelayFade(false), delay),
+			timer2 = setTimeout(() => setDelayDelete(false), delay + 500)
+
+		return () => {
+			clearTimeout(timer1)
+			clearTimeout(timer2)
+		}
 	}, [])
 
-	return (
-		<div className="layer loading-screen big-cabo-letters">
+	return delayDelete ? (
+		<div
+			className={`layer loading-screen big-cabo-letters${
+				delayFade ? " fade-in-300ms" : ""
+			}`}
+		>
 			<span id="C">C</span>
 			<span id="A">A</span>
 			<span id="B">B</span>
 			<span id="O">O</span>
 		</div>
+	) : (
+		<></>
 	)
 }

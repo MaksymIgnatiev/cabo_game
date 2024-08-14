@@ -5,14 +5,16 @@ import "./scss/main.scss"
 import { useEffect, useState } from "react"
 import { port, userID } from "../../database"
 import {
+	colorText,
 	createDefaultUserSettings,
+	createGameUser,
 	createUser,
 	getValueFromLocalStorage,
 	id,
 	loadToGlobalView,
 	sendMessageToClient,
 } from "../../functions"
-import { HomePageComponentParams, User } from "../../types"
+import { HomePageComponentParams, UserObject } from "../../types"
 import {
 	LOCAL_STORAGE_NICKNAME_KEY,
 	LOCAL_STORAGE_ROOM_ID_KEY,
@@ -20,7 +22,7 @@ import {
 	LOCAL_STORAGE_USER_SETTINGS_KEY,
 } from "./data/keys"
 
-import { WebSocket } from "ws"
+import GameWebSocket from "./classes/GameWebSocket"
 import CollectData from "./components/CollectData"
 import Loading from "./components/Loading"
 import MainGame from "./components/MainGame"
@@ -29,15 +31,21 @@ import Start from "./components/Start"
 import Transition from "./components/Transition"
 
 export default function Home({ URLRoomId }: HomePageComponentParams) {
-	const [user, setUser] = useState<User>(createUser("", -1, { roomId: -1 })),
-		[userSettings, setUserSettings] = useState(
-			createDefaultUserSettings({
-				settButOnpPos: "top-right",
-			})
-		),
+	var [user, setUser] = useState(createUser("", -1, { roomId: -1 })),
+		[gameUser, setGameUser] = useState(createGameUser(user)),
+		[userSettings, setUserSettings] = useState(createDefaultUserSettings()),
 		[transition, setTransition] = useState(false),
+		userObject: UserObject = {
+			user,
+			gameUser,
+			userSettings,
+			setUser,
+			setUserSettings,
+			setGameUser,
+			ws: new GameWebSocket(""),
+		},
 		onWindowLoad = () => {
-			const userNameLocalStorage = getValueFromLocalStorage(
+			var userNameLocalStorage = getValueFromLocalStorage(
 					LOCAL_STORAGE_NICKNAME_KEY
 				),
 				userIDLocalStorage = getValueFromLocalStorage(
@@ -46,8 +54,9 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 				roomIDLocalStorage = getValueFromLocalStorage(
 					LOCAL_STORAGE_ROOM_ID_KEY
 				),
-				ws = new WebSocket(`ws://localhost:${port}`)
-			// ws.on("message", )
+				ws = new GameWebSocket(`ws://localhost:${port}`)
+			ws.on("message", () => {})
+			userObject.ws = ws
 
 			setUser(o =>
 				Object.assign(o, {
@@ -60,10 +69,7 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 			loadToGlobalView("sendMessageToClient", sendMessageToClient)
 
 			return () => {
-				// ws.close()
-				// do not remove this comment!!!
-				// and this also
-				// i have the bes comment ever!!!
+				ws.close()
 			}
 		},
 		toggleTransition = () => {
@@ -71,8 +77,9 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 			setTimeout(() => setTransition(p => !p), 3000)
 		},
 		checkForData = () => {
-			if (user.name === "") setUser(o => ({ ...o, name: "" }))
-			if (user.roomId === -1) setUser(o => ({ ...o, roomId: 0 }))
+			if (user.name === "") setUser(o => Object.assign(o, { name: "" }))
+			if (user.roomId === -1)
+				setUser(o => Object.assign(o, { roomId: 0 }))
 		},
 		checkValidUser = () =>
 			user.name !== "" && user.roomId !== -1 && user.id !== -1
@@ -86,7 +93,11 @@ export default function Home({ URLRoomId }: HomePageComponentParams) {
 		)
 	}, [userSettings])
 
-	useEffect(() => console.log(user), [user]) // development only
+	useEffect(() => console.log(colorText("User: ", "#050"), user), [user]) // development only
+	useEffect(
+		() => console.log(colorText("User: ", "#0c0"), gameUser),
+		[gameUser]
+	) // development only
 
 	return (
 		<>

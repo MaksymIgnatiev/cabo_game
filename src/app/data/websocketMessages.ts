@@ -1,4 +1,4 @@
-export const error_key_exists =
+export var error_key_exists =
 		'{type: "error", message: "Key already generated", code: "KEY_EXISTS"}',
 	error_message_doesnt_have_key =
 		'{type: "error", message: "Message doesn\'t have key", code: "MESSAGE_DOESNT_HAVE_KEY"}',

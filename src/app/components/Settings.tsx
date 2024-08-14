@@ -9,7 +9,7 @@ export default function Settings({
 	userSettings,
 	setUserSettings,
 }: SettingsParams) {
-	const [active, setActive] = useState(false),
+	var [active, setActive] = useState(false),
 		[side, setSide] = useState<Side>(
 			userSettings.settButOnpPos.split("-")[1] as Side
 		),

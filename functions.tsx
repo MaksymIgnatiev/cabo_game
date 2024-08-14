@@ -43,8 +43,8 @@ import {
 	SimpleAction,
 	User,
 	UserSettings,
-	WebSocketMessageIn,
-	WebSocketMessageOut,
+	WebSocketMessageClient,
+	WebSocketMessageServer,
 } from "./types"
 
 import { HEX_CHARS } from "./src/app/data/plain"
@@ -445,21 +445,21 @@ export function createUser<
 		type: "user",
 		name,
 		id,
-		roomId: options.roomId,
+		roomId: options.roomId ?? -1,
 		is_admin: options.is_admin ?? false,
 		lang: "en",
 		last_seen: Date.now(),
 	}
 }
 
-export function createGameUser(user: User) {
+export function createGameUser(user: User): GameUser {
 	return Object.assign(user, {
-		type: "game_user",
-		roomId: user.roomId ?? -1,
+		type: "game_user" as const,
+		roomId: user.roomId,
 		cards: [] as Card[],
 		points: 0,
 		turn: false,
-	}) as unknown as GameUser
+	})
 }
 
 export function checkUser<I extends number>(id: I) {
@@ -580,8 +580,8 @@ export function parseWebsocketMessage<P extends "server" | "client">(
 	place: P
 ):
 	| (P extends "server"
-			? WebSocketMessageIn<boolean>
-			: WebSocketMessageOut<boolean>)
+			? WebSocketMessageServer<boolean>
+			: WebSocketMessageClient<boolean>)
 	| null {
 	try {
 		if (typeof message !== "string") return null
@@ -595,8 +595,8 @@ export function parseWebsocketMessage<P extends "server" | "client">(
 
 export function checkWebsocketMessage<
 	A extends SimpleAction | GameAction | undefined = undefined
->(message: WebSocketMessageIn<boolean>, action?: A, dev = false) {
-	var data: WebSocketMessageIn<boolean> | null = null
+>(message: WebSocketMessageServer<boolean>, action?: A, dev = false) {
+	var data: WebSocketMessageServer<boolean> | null = null
 	if (dev) data = message
 	else if (keysInWebsocketMessage.every(key => Object.hasOwn(message, key))) {
 		if (action === "add_user_to_room")
@@ -646,9 +646,9 @@ export function checkWebsocketMessage<
 	return data
 }
 
-export function sendMessageToAllClients<
-	T extends WebSocketMessageOut | JSONString
->(message: T) {
+export function sendMessageToAllClients(
+	message: WebSocketMessageClient | JSONString
+) {
 	clients.forEach(client =>
 		client.ws.readyState === WebSocket.OPEN
 			? client.ws.send(
@@ -662,7 +662,7 @@ export function sendMessageToAllClients<
 
 export function sendMessageToClient(
 	client: GameWebSocket,
-	message: WebSocketMessageOut<boolean> | JSONString
+	message: WebSocketMessageClient<boolean> | JSONString
 ) {
 	client.readyState === WebSocket.OPEN
 		? client.send(
@@ -755,7 +755,7 @@ export function processCMD<C extends FullCMD>(cmd: C) {
 
 export function processConfigMessage(
 	ws: GameWebSocket,
-	message: WebSocketMessageIn<true>
+	message: WebSocketMessageServer<true>
 ) {
 	if (message.action === "confirm") {
 	} else if (message.action === "reject") {
@@ -780,17 +780,17 @@ export function processConfigMessage(
 }
 
 export function checkWebSocketMessageType<
-	T extends WebSocketMessageIn<boolean>["type"]
+	T extends WebSocketMessageServer<boolean>["type"]
 >(
-	message: WebSocketMessageIn<boolean>,
+	message: WebSocketMessageServer<boolean>,
 	type: T
 ): message is T extends "config"
-	? WebSocketMessageIn<true>
-	: WebSocketMessageIn<false> {
+	? WebSocketMessageServer<true>
+	: WebSocketMessageServer<false> {
 	return message.type === type
 }
 
-export function processRenameUser(message: WebSocketMessageIn) {
+export function processRenameUser(message: WebSocketMessageServer) {
 	var { room, user } = message,
 		roomFound = getRoom(room),
 		ws = getWebSocketByHexID(message.key!)
@@ -809,7 +809,7 @@ export function processRenameUser(message: WebSocketMessageIn) {
 		return ws ? sendMessageToClient(ws, error_user_not_found) : void 0
 
 	userFound.name = message.newName
-	var messageOut: WebSocketMessageOut = {
+	var messageOut: WebSocketMessageClient = {
 		type: "to_client",
 		action: "rename_user",
 		room: roomFound,
@@ -833,13 +833,18 @@ export function handleRawClientMessage(messageIn: JSONString) {
 	processClientMessage(data)
 }
 
-export function processClientMessage(message: WebSocketMessageOut<boolean>) {
+export function processClientMessage(message: WebSocketMessageClient<boolean>) {
 	if (message.type === "config") {
 	} else if (message.type === "error") {
 	} else if (message.type === "to_client") {
-		// var {action} = message
+		var { action } = message
 	}
 }
+
+export function processConfigMessageClient(
+	ws: GameWebSocket,
+	message: WebSocketMessageClient<true>
+) {}
 
 /*
 	Client

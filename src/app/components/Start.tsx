@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import Button from "./Start/button"
 
 export default function Start({}) {
-	const [notAvailable, setNotAvailable] = useState(true)
+	var [notAvailable, setNotAvailable] = useState(true)
 
 	useEffect(() => {
 		setTimeout(() => {

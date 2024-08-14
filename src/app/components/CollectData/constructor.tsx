@@ -12,9 +12,9 @@ export default function Constructor({
 	errorText,
 	onSubmit,
 }: CollectDataCostructorParams) {
-	const inputRef = useRef<HTMLInputElement>(null)
+	var inputRef = useRef<HTMLInputElement>(null)
 
-	const handleSubmit = (event: React.FormEvent) => {
+	var handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault()
 		if (inputRef.current) onSubmit(inputRef.current.value)
 	}

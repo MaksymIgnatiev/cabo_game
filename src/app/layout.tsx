@@ -1,11 +1,11 @@
 import "./globals.scss"
 
-import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import type { Metadata } from "next"
 
-const inter = Inter({ subsets: ["latin"] })
+var inter = Inter({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
+export var metadata: Metadata = {
 	title: "The CABO game",
 	description: "CABO game for 2-8 people",
 }
