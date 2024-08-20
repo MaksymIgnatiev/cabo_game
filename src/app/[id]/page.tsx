@@ -10,20 +10,20 @@ import { useState } from "react"
 export default function ID() {
 	var [invalidId, setInvalidId] = useState(false),
 		[noSuchGame, setNoSuchGame] = useState(false),
-		id = useParams().id as string
-	// roomIdstr = Array.isArray(id) ? id[0] : id
+		id = useParams().id,
+		roomIdstr = Array.isArray(id) ? id[0] : id
 
-	if (!/^\d+$/.test(id)) setInvalidId(true)
+	if (!/^\d+$/.test(roomIdstr)) setInvalidId(true)
 
 	var roomId = +id
 
 	if (!checkRoom(+roomId)) setNoSuchGame(true)
 
 	return invalidId ? (
-		<InvalidId id={id}></InvalidId>
+		<InvalidId id={roomIdstr}></InvalidId>
 	) : noSuchGame ? (
 		<NoSuchGame id={roomId}></NoSuchGame>
 	) : (
-		<Index URLRoomId={id} />
+		<Index URLRoomId={roomIdstr} />
 	)
 }
