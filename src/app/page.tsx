@@ -2,8 +2,13 @@
 
 import "./scss/main.scss"
 
-import { useEffect, useState } from "react"
-import { port, userID } from "../../database"
+import { HomePageComponentParams, UserObject } from "../../types"
+import {
+	LOCAL_STORAGE_NICKNAME_KEY,
+	LOCAL_STORAGE_ROOM_ID_KEY,
+	LOCAL_STORAGE_USER_ID_KEY,
+	LOCAL_STORAGE_USER_SETTINGS_KEY,
+} from "./data/keys"
 import {
 	colorText,
 	createDefaultUserSettings,
@@ -14,16 +19,11 @@ import {
 	loadToGlobalView,
 	sendMessageToClient,
 } from "../../functions"
-import { HomePageComponentParams, UserObject } from "../../types"
-import {
-	LOCAL_STORAGE_NICKNAME_KEY,
-	LOCAL_STORAGE_ROOM_ID_KEY,
-	LOCAL_STORAGE_USER_ID_KEY,
-	LOCAL_STORAGE_USER_SETTINGS_KEY,
-} from "./data/keys"
+import { port, userID } from "../../database"
+import { useEffect, useState } from "react"
 
-import GameWebSocket from "./classes/GameWebSocket"
 import CollectData from "./components/CollectData"
+import GameWebSocket from "./classes/GameWebSocket"
 import Loading from "./components/Loading"
 import MainGame from "./components/MainGame"
 import Settings from "./components/Settings"
