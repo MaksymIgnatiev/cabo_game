@@ -4,19 +4,7 @@ import { WebSocket } from "ws"
 
 type TheBestTypeNameButNotTheBestUsacaseBecauseThisTypeDescribesTheWorstTypeInTypescitpEverAndYouWillBePunishedForItIfYouWillUseIt =
 	any
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 // ---------- Utility types ----------
 
 export type NotEmpty<T> = keyof T extends never ? never : T
