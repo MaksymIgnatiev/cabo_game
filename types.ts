@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react"
 
 import { WebSocket } from "ws"
 
-type TheBestTypeNameButNotTheBestUsacaseBecauseThisTypeDescribesTheWorstTypeInTypescitpEverAndYouWillBePunishedForItIfYouWillUseIt =
+export type TheBestTypeNameButNotTheBestUsacaseBecauseThisTypeDescribesTheWorstTypeInTypescitpEverAndYouWillBePunishedForItIfYouWillUseIt =
 	any
 
 // ---------- Utility types ----------
