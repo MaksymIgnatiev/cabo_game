@@ -9,7 +9,7 @@ export type TheBestTypeNameButNotTheBestUsacaseBecauseThisTypeDescribesTheWorstT
 
 export type NotEmpty<T> = keyof T extends never ? never : T
 
-type AppendToObject<T, U> = {
+type AppendToObject<T extends object, U extends object> = {
 	[K in keyof U]: U[K] extends
 		| string
 		| number
