@@ -26,10 +26,11 @@ export type PartialNonEmpty<T extends object> = {
 	[K in keyof T]: AppendToObject<{}, { [P in K]: T[K] }>
 }[keyof T]
 
-type Range<
+type ListRange<
 	N extends number,
 	Acc extends Array<number> = []
-> = Acc["length"] extends N ? Acc : Range<N, [...Acc, Acc["length"]]>
+> = Acc["length"] extends N ? Acc : ListRange<N, [...Acc, Acc["length"]]>
+type Range<N extends number> = [...ListRange<N>][number]
 
 /*
 Utility types
@@ -49,7 +50,7 @@ export type JSONValue =
 
 export type Language = "en" | "ru"
 
-type HexChar = Range<10>[number] | "a" | "b" | "c" | "d" | "e" | "f"
+type HexChar = Range<10> | "a" | "b" | "c" | "d" | "e" | "f"
 
 export type IsHexChar<T extends string> = T extends HexChar ? T : never
 
