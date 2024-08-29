@@ -33,9 +33,9 @@ type ListRange<
 type Range<N extends number> = [...ListRange<N>][number]
 
 /*
-Utility types
+	Utility types
 ------------------------------------------------------------
-Global
+	Global
 */
 
 export type JSONString = string
@@ -53,15 +53,6 @@ export type Language = "en" | "ru"
 type HexChar = Range<10> | "a" | "b" | "c" | "d" | "e" | "f"
 
 export type IsHexChar<T extends string> = T extends HexChar ? T : never
-
-// type HexColor<T extends string> =
-//	T extends `#${HexChar}${HexChar}${HexChar}${infer Rest1}`
-//		? Rest1 extends ``
-//			? CaseInsensitive<T>
-//			: Rest1 extends `${HexChar}${HexChar}${HexChar}`
-//			? CaseInsensitive<T>
-//			: never
-//		: never
 
 type CaseInsensitive<T extends string> = T extends `${infer F}${infer R}`
 	? `${Uppercase<F> | Lowercase<F>}${CaseInsensitive<R>}`
@@ -285,15 +276,15 @@ type RegularCard =
 	| Card<13>
 
 /*
-Card
+	Card
 ------------------------------------------------------------
-Game
+	Game
 */
 
 /*
-Game
+	Game
 ------------------------------------------------------------
-Config (database)
+	Config (database)
 */
 
 export type Database = {
