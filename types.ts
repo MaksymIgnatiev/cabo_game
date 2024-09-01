@@ -301,9 +301,9 @@ export type Client = {
 }
 
 /*
-Config (database)
+	Config (database)
 ------------------------------------------------------------
-WebSocket
+	WebSocket
 */
 
 export type CMD = "show"
