@@ -3,6 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
+	"license": "GPL3",
 	"scripts": {
 		"dev": "next dev -H 0.0.0.0",
 		"build": "next build",
