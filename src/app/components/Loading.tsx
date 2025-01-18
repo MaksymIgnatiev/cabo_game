@@ -24,6 +24,7 @@ export default function Loading() {
 			className={`layer loading-screen big-cabo-letters${
 				delayFade ? " fade-in-300ms" : ""
 			}`}
+			translate="no"
 		>
 			<span id="C">C</span>
 			<span id="A">A</span>

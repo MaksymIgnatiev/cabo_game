@@ -24,7 +24,7 @@ import { useEffect, useState } from "react"
 
 import CollectData from "./components/CollectData"
 import GameWebSocket from "./classes/GameWebSocket"
-import Loading from "./components/Loading"
+import Loading from "./components/loading"
 import MainGame from "./components/MainGame"
 import Settings from "./components/Settings"
 import Start from "./components/Start"
