@@ -1,9 +1,9 @@
 {
-	"name": "next_js_app",
+	"name": "cabo_game",
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
-	"license": "GPL3",
+	"license": "0BSD",
 	"scripts": {
 		"dev": "next dev -H 0.0.0.0",
 		"build": "next build",
