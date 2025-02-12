@@ -1,7 +1,6 @@
 {
 	"name": "cabo_game",
 	"version": "0.0.1",
-	"private": true,
 	"type": "module",
 	"license": "0BSD",
 	"scripts": {
