@@ -12,6 +12,7 @@
 		"start:ws": "bun run server.ts"
 	},
 	"dependencies": {
+		"@preact/signals": "^2.0.1",
 		"@types/sass": "^1.45.0",
 		"@types/ws": "^8.5.10",
 		"next": "14.2.3",
